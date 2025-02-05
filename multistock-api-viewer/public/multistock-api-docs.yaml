@@ -56,3 +56,167 @@ paths:
                         type: array
                         items:
                           type: object
+  /mercadolibre/sales-by-month/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get sales by month
+      description: Retrieves sales data for a specific month and client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve sales data (e.g., `09` for September)
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve sales data (e.g., `2024`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ventas por mes obtenidas con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Ventas por mes obtenidas con éxito.
+                  data:
+                    type: object
+                    properties:
+                      "2025-01":
+                        type: object
+                        properties:
+                          total_amount:
+                            type: integer
+                            example: 30000
+                          orders:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1234567890
+                                date_created:
+                                  type: string
+                                  example: "2025-01-02T15:23:40.000-04:00"
+                                total_amount:
+                                  type: integer
+                                  example: 15000
+                                status:
+                                  type: string
+                                  example: paid
+                                sold_products:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      order_id:
+                                        type: integer
+                                        example: 1234567890
+                                      order_date:
+                                        type: string
+                                        example: "2025-01-02T15:23:40.000-04:00"
+                                      title:
+                                        type: string
+                                        example: Producto A
+                                      quantity:
+                                        type: integer
+                                        example: 1
+                                      price:
+                                        type: integer
+                                        example: 15000
+  /mercadolibre/annual-sales/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get annual sales
+      description: Retrieves annual sales data for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve sales data (e.g., `2025`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ventas anuales obtenidas con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Ventas anuales obtenidas con éxito.
+                  data:
+                    type: object
+                    properties:
+                      "2025-01":
+                        type: object
+                        properties:
+                          total_amount:
+                            type: integer
+                            example: 10780
+                          orders:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1234567890
+                                date_created:
+                                  type: string
+                                  example: "2025-01-02T15:23:40.000-04:00"
+                                total_amount:
+                                  type: integer
+                                  example: 10780
+                                status:
+                                  type: string
+                                  example: paid
+                                sold_products:
+                                  type: array
+                                  items:
+                                    type: object
+                                    properties:
+                                      order_id:
+                                        type: integer
+                                        example: 1234567890
+                                      order_date:
+                                        type: string
+                                        example: "2025-01-02T15:23:40.000-04:00"
+                                      title:
+                                        type: string
+                                        example: Producto Ejemplo
+                                      quantity:
+                                        type: integer
+                                        example: 2
+                                      price:
+                                        type: integer
+                                        example: 5390
