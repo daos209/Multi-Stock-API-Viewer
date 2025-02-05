@@ -1,0 +1,202 @@
+openapi: 3.0.3
+info:
+  title: MultiStockBack-MercadoLibre
+  description: This document provides a detailed reference for the MercadoLibre API, listing all available endpoints, their respective HTTP methods, expected request parameters, and response formats. This guide is intended to assist front-end developers in integrating MercadoLibre services efficiently.
+  version: 1.0.0
+servers:
+  - url: https://linen-anteater-319357.hostingersite.com/api
+paths:
+  /login:
+    post:
+      tags:
+        - Login
+      summary: User login
+      description: Authenticates a user and returns a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        '200':
+          description: Successful login
+        '401':
+          description: Invalid password
+        '404':
+          description: User not found
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      description: Registers a new user in the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Agustín
+                apellidos:
+                  type: string
+                  example: Martínez
+                telefono:
+                  type: string
+                  example: "+56999999999"
+                email:
+                  type: string
+                  example: thisismyemail@email.com
+                password:
+                  type: string
+                  example: agoodpasswordidontknow
+                password_confirmation:
+                  type: string
+                  example: agoodpasswordidontknow
+      responses:
+        '201':
+          description: User successfully created
+        '422':
+          description: Unprocessable Entity (one or more fields missing, password does not match, etc)
+  /users/{id}:
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      description: Deletes a user from the system using their ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to be deleted
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized"
+
+  /clientes:
+    get:
+      tags:
+        - Clientes
+      summary: Get all clients
+      responses:
+        '200':
+          description: List of clients
+    post:
+      summary: Create a client
+      responses:
+        '201':
+          description: Client successfully created
+  /clientes/{id}:
+    get:
+      tags:
+        - Clientes
+      summary: Get a client by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Client found
+        '404':
+          description: Client not found
+    patch:
+      summary: Update a client
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Client successfully updated
+    delete:
+      summary: Delete a client
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Client successfully deleted
+  /mercadolibre/login:
+    post:
+      tags:
+        - Login
+      summary: Generate MercadoLibre Auth URL
+      responses:
+        '200':
+          description: Auth URL generated
+  /mercadolibre/callback:
+    get:
+      tags:
+        - Clientes
+      summary: Handle MercadoLibre authentication callback
+      parameters:
+        - name: code
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Token successfully retrieved
+        '400':
+          description: Authentication failed
+  /mercadolibre/test-connection/{client_id}:
+    get:
+      summary: Test MercadoLibre connection
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Connection successful
