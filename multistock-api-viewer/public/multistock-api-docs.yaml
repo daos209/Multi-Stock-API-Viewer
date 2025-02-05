@@ -690,3 +690,152 @@ paths:
                           credit_card:
                             type: integer
                             example: 2
+  /mercadolibre/refunds-by-category/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get refunds or returns by category
+      description: Retrieves refunds or returns data by category for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: date_from
+          in: query
+          required: false
+          description: The start date for the date range (e.g., `2023-01-01`)
+          schema:
+            type: string
+        - name: date_to
+          in: query
+          required: false
+          description: The end date for the date range (e.g., `2023-01-31`)
+          schema:
+            type: string
+        - name: category
+          in: query
+          required: false
+          description: The category ID to filter by (e.g., `MLC12345`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Refunds by category retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Refunds by category retrieved successfully.
+                  data:
+                    type: object
+                    properties:
+                      MLC12345:
+                        type: object
+                        properties:
+                          category_id:
+                            type: string
+                            example: MLC12345
+                          total_refunds:
+                            type: integer
+                            example: 50000
+                          orders:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: integer
+                                  example: 1234567890
+                                created_date:
+                                  type: string
+                                  example: "2023-01-02T15:23:40.000-04:00"
+                                total_amount:
+                                  type: integer
+                                  example: 15000
+                                status:
+                                  type: string
+                                  example: cancelled
+                                product:
+                                  type: object
+                                  properties:
+                                    title:
+                                      type: string
+                                      example: Producto A
+                                    quantity:
+                                      type: integer
+                                      example: 1
+                                    price:
+                                      type: integer
+                                      example: 15000
+                                buyer:
+                                  type: object
+                                  properties:
+                                    id:
+                                      type: integer
+                                      example: 12345
+                                    name:
+                                      type: string
+                                      example: comprador_ejemplo
+                                billing:
+                                  type: object
+                                  properties:
+                                    first_name:
+                                      type: string
+                                      example: Juan
+                                    last_name:
+                                      type: string
+                                      example: Pérez
+                                    identification:
+                                      type: object
+                                      properties:
+                                        type:
+                                          type: string
+                                          example: RUT
+                                        number:
+                                          type: string
+                                          example: 12345678
+                                shipping:
+                                  type: object
+                                  properties:
+                                    shipping_id:
+                                      type: string
+                                      example: SHIP12345
+                                    shipping_method:
+                                      type: string
+                                      example: Envío estándar
+                                    tracking_number:
+                                      type: string
+                                      example: ABC123XYZ
+                                    shipping_status:
+                                      type: string
+                                      example: delivered
+                                    shipping_address:
+                                      type: object
+                                      properties:
+                                        address:
+                                          type: string
+                                          example: Calle Falsa
+                                        number:
+                                          type: string
+                                          example: 123
+                                        city:
+                                          type: string
+                                          example: Ciudad Falsa
+                                        state:
+                                          type: string
+                                          example: Falso
+                                        country:
+                                          type: string
+                                          example: Ciudad Falsa
+                                        comments:
+                                          type: string
+                                          example: Dejar en la puerta
