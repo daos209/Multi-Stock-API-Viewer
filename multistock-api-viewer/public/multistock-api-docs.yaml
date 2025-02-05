@@ -391,3 +391,59 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
+  /mercadolibre/top-selling-products/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get top selling products
+      description: Retrieves the top selling products for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve sales data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve sales data (e.g., `01`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Productos más vendidos obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos más vendidos obtenidos con éxito.
+                  total_sales:
+                    type: integer
+                    example: 90390
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        title:
+                          type: string
+                          example: Producto Imaginario X
+                        quantity:
+                          type: integer
+                          example: 4
+                        total_amount:
+                          type: integer
+                          example: 21560
