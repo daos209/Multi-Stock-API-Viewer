@@ -5,4 +5,54 @@ info:
   version: 1.0.0
 servers:
   - url: https://linen-anteater-319357.hostingersite.com/api
-paths: {}
+paths:
+  /mercadolibre/invoices/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get invoice report
+      description: Retrieves an invoice report for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Reporte de facturas obtenido con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Reporte de facturas obtenido con éxito.
+                  data:
+                    type: object
+                    properties:
+                      offset:
+                        type: integer
+                        example: 1
+                      limit:
+                        type: integer
+                        example: 2
+                      total:
+                        type: integer
+                        example: 0
+                      last_id:
+                        type: integer
+                        example: 0
+                      results:
+                        type: array
+                        items:
+                          type: object
+                      errors:
+                        type: array
+                        items:
+                          type: object
