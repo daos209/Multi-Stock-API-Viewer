@@ -839,3 +839,109 @@ paths:
                                         comments:
                                           type: string
                                           example: Dejar en la puerta
+  /login:
+    post:
+      tags:
+        - Login
+      summary: User login
+      description: Authenticates a user and returns a token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: user@example.com
+                password:
+                  type: string
+                  example: yourpassword
+      responses:
+        '200':
+          description: Successful login
+        '401':
+          description: Invalid password
+        '404':
+          description: User not found
+  /users:
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      description: Registers a new user in the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Agustín
+                apellidos:
+                  type: string
+                  example: Martínez
+                telefono:
+                  type: string
+                  example: "+56999999999"
+                email:
+                  type: string
+                  example: thisismyemail@email.com
+                password:
+                  type: string
+                  example: agoodpasswordidontknow
+                password_confirmation:
+                  type: string
+                  example: agoodpasswordidontknow
+      responses:
+        '201':
+          description: User successfully created
+        '422':
+          description: Unprocessable Entity (one or more fields missing, password does not match, etc)
+  /users/{id}:
+    delete:
+      tags:
+        - Users
+      summary: Delete a user
+      description: Deletes a user from the system using their ID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to be deleted
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User successfully deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User deleted successfully"
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "User not found"
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Unauthorized"
