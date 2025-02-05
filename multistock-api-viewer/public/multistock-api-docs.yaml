@@ -447,3 +447,109 @@ paths:
                         total_amount:
                           type: integer
                           example: 21560
+  /mercadolibre/order-statuses/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get order statuses
+      description: Retrieves the order statuses for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve order statuses (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve order statuses (e.g., `01`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Estados de órdenes y productos relacionados obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Estados de órdenes y productos relacionados obtenidos con éxito.
+                  data:
+                    type: object
+                    properties:
+                      statuses:
+                        type: object
+                        properties:
+                          paid:
+                            type: integer
+                            example: 9
+                          pending:
+                            type: integer
+                            example: 0
+                          canceled:
+                            type: integer
+                            example: 0
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: MLC1234567890
+                            title:
+                              type: string
+                              example: Producto Ejemplo A
+                            category_id:
+                              type: string
+                              example: MLC1234
+                            variation_id:
+                              type: integer
+                              example: 123456789012
+                            seller_custom_field:
+                              type: string
+                              example: null
+                            global_price:
+                              type: string
+                              example: null
+                            net_weight:
+                              type: string
+                              example: null
+                            variation_attributes:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  name:
+                                    type: string
+                                    example: Color
+                                  id:
+                                    type: string
+                                    example: COLOR
+                                  value_id:
+                                    type: string
+                                    example: 12345
+                                  value_name:
+                                    type: string
+                                    example: Rojo
+                            warranty:
+                              type: string
+                              example: Garantía del vendedor - 6 meses
+                            condition:
+                              type: string
+                              example: new
+                            seller_sku:
+                              type: string
+                              example: A-123-ROJ-M
