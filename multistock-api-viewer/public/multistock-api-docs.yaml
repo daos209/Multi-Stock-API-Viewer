@@ -264,3 +264,80 @@ paths:
                         end_date:
                           type: string
                           example: "2025-01-05"
+  /mercadolibre/sales-by-week/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get sales by week
+      description: Retrieves sales data for a specific week and client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve sales data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve sales data (e.g., `01`)
+          schema:
+            type: string
+        - name: week_start_date
+          in: query
+          required: true
+          description: The start date of the week (e.g., `2025-01-01`)
+          schema:
+            type: string
+        - name: week_end_date
+          in: query
+          required: true
+          description: The end date of the week (e.g., `2025-01-07`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ingresos y productos obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Ingresos y productos obtenidos con éxito.
+                  data:
+                    type: object
+                    properties:
+                      week_start_date:
+                        type: string
+                        example: "2025-01-01"
+                      week_end_date:
+                        type: string
+                        example: "2025-01-07"
+                      total_sales:
+                        type: integer
+                        example: 50000
+                      sold_products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                              example: Producto Imaginario A
+                            quantity:
+                              type: integer
+                              example: 3
+                            total_amount:
+                              type: integer
+                              example: 15000
