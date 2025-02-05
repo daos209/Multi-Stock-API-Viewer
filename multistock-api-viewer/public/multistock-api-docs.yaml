@@ -553,3 +553,57 @@ paths:
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+  /mercadolibre/top-payment-methods/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get top payment methods
+      description: Retrieves the top payment methods for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve payment methods data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve payment methods data (e.g., `01`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Métodos de pago más utilizados obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Métodos de pago más utilizados obtenidos con éxito.
+                  request_date:
+                    type: string
+                    example: "2025-01-27 19:06:15"
+                  data:
+                    type: object
+                    properties:
+                      account_money:
+                        type: integer
+                        example: 39
+                      debit_card:
+                        type: integer
+                        example: 12
+                      credit_card:
+                        type: integer
+                        example: 2
