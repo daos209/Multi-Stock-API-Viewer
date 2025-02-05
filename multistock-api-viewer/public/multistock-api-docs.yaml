@@ -607,3 +607,86 @@ paths:
                       credit_card:
                         type: integer
                         example: 2
+  /mercadolibre/summary/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get store summary
+      description: Retrieves a summary of the store for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Resumen de la tienda obtenido con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Resumen de la tienda obtenido con éxito.
+                  data:
+                    type: object
+                    properties:
+                      total_sales:
+                        type: integer
+                        example: 638056
+                      top_selling_products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                              example: Camiseta Mujer Jockey Shapewear K-435 Seamless Control
+                            quantity:
+                              type: integer
+                              example: 7
+                            total_amount:
+                              type: integer
+                              example: 88361
+                      order_statuses:
+                        type: object
+                        properties:
+                          paid:
+                            type: integer
+                            example: 36
+                          pending:
+                            type: integer
+                            example: 0
+                          canceled:
+                            type: integer
+                            example: 0
+                      daily_sales:
+                        type: integer
+                        example: 0
+                      weekly_sales:
+                        type: integer
+                        example: 0
+                      monthly_sales:
+                        type: integer
+                        example: 90390
+                      annual_sales:
+                        type: integer
+                        example: 90390
+                      top_payment_methods:
+                        type: object
+                        properties:
+                          account_money:
+                            type: integer
+                            example: 39
+                          debit_card:
+                            type: integer
+                            example: 12
+                          credit_card:
+                            type: integer
+                            example: 2
