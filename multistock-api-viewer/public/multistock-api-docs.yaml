@@ -220,3 +220,47 @@ paths:
                                       price:
                                         type: integer
                                         example: 5390
+  /mercadolibre/weeks-of-month:
+    get:
+      tags:
+        - Reports
+      summary: Get weeks of the month
+      description: Retrieves the weeks of a specific month.
+      parameters:
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve weeks (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve weeks (e.g., `01`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Semanas obtenidas con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Semanas obtenidas con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        start_date:
+                          type: string
+                          example: "2025-01-01"
+                        end_date:
+                          type: string
+                          example: "2025-01-05"
