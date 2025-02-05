@@ -341,3 +341,53 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
+  /mercadolibre/daily-sales/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get daily sales
+      description: Retrieves daily sales data for a specific client.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ventas diarias obtenidas con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Ventas diarias obtenidas con éxito.
+                  data:
+                    type: object
+                    properties:
+                      date:
+                        type: string
+                        example: "2025-01-24"
+                      total_sales:
+                        type: integer
+                        example: 0
+                      sold_products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            title:
+                              type: string
+                              example: Producto Imaginario A
+                            quantity:
+                              type: integer
+                              example: 3
+                            total_amount:
+                              type: integer
+                              example: 15000
