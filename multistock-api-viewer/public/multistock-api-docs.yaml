@@ -1,10 +1,60 @@
 openapi: 3.0.3
 info:
   title: MultiStockBack-MercadoLibre
-  description: This document provides a detailed reference for the MercadoLibre API, listing all available endpoints, their respective HTTP methods, expected request parameters, and response formats. This guide is intended to assist front-end developers in integrating MercadoLibre services efficiently.
+  description: |
+    This document provides a detailed reference for the MercadoLibre API, listing all available endpoints, their respective HTTP methods, expected request parameters, and response formats. This guide is intended to assist front-end developers in integrating MercadoLibre services efficiently.
+
+    ## Step-by-Step Guide for Using the API Endpoints and Tokens
+
+    This section explains how to authenticate and use the available API endpoints with tokens to access protected resources.
+
+    ### 1. Authentication (Login)
+    To access the protected routes, you first need to authenticate the user and obtain a token. This can be done using the `/login` endpoint by sending the user's email and password.
+
+    **Request to /login:**
+    - Method: `POST`
+    - URL: `/login`
+    - Body:
+      ```json
+      {
+        "email": "user@example.com",
+        "password": "yourpassword"
+      }
+      ```
+
+    **Example Response (200):**
+    ```json
+    {
+      "token": "your_generated_token"
+    }
+    ```
+
+    The response will contain a `token` that will be used for authentication in subsequent requests.
+
+    ### 2. Using the Token for Protected Routes
+    After receiving the token from the `/login` endpoint, you must include it in the `Authorization` header when making requests to protected routes.
+
+    **Example request to /users/{id}** (retrieving user information):
+    - Method: `GET`
+    - URL: `/users/{id}`
+    - Headers:
+      ```json
+      {
+        "Authorization": "Bearer your_generated_token"
+      }
+      ```
+
+    ### 3. Testing the Endpoints
+    After authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
+
+    ### 4. Troubleshooting
+    - If the token is invalid or expired, you will receive a `401 Unauthorized` error.
+    - If the user does not exist, you will receive a `404 Not Found` error for the `/users/{id}` endpoint.
+
   version: 1.0.0
 servers:
   - url: https://linen-anteater-319357.hostingersite.com/api
+
 paths:
   /mercadolibre/invoices/{client_id}:
     get:
@@ -869,47 +919,107 @@ paths:
 
   
   /users:
-      post:
-        tags:
-          - Users and Clients
-        summary: Create a new user
-        description: Registers a new user in the system
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  nombre:
-                    type: string
-                    example: Agustín
-                  apellidos:
-                    type: string
-                    example: Martínez
-                  telefono:
-                    type: string
-                    example: "+56999999999"
-                  email:
-                    type: string
-                    example: thisismyemail@email.com
-                  password:
-                    type: string
-                    example: agoodpasswordidontknow
-                  password_confirmation:
-                    type: string
-                    example: agoodpasswordidontknow
-        responses:
-          '201':
-            description: User successfully created
-          '422':
-            description: Unprocessable Entity (one or more fields missing, password does not match, etc)
+    post:
+      tags:
+        - Users
+      summary: Create a new user
+      description: Registers a new user in the system
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Agustín
+                apellidos:
+                  type: string
+                  example: Martínez
+                telefono:
+                  type: string
+                  example: "+56999999999"
+                email:
+                  type: string
+                  example: thisismyemail@email.com
+                password:
+                  type: string
+                  example: password
+                password_confirmation:
+                  type: string
+                  example: passwordConfirmation
+      responses:
+        '201':
+          description: User successfully created
+        '422':
+          description: Unprocessable Entity (one or more fields missing, etc)
   /users/{id}:
+    get:
+      tags:
+        - Users
+      summary: Get a user by ID
+      description: Retrieves user data using their ID.
+      security:
+        - BearerAuth: []  
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to retrieve
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: User retrieved successfully
+        '404':
+          description: User not found
+    patch:
+      tags:
+        - Users
+      summary: Update user data
+      description: Updates user information using their ID.
+      security:
+        - BearerAuth: []  
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: ID of the user to update
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nombre:
+                  type: string
+                  example: Agustín
+                apellidos:
+                  type: string
+                  example: Martínez
+                telefono:
+                  type: string
+                  example: "+56999999999"
+                email:
+                  type: string
+                  example: updatedemail@email.com
+      responses:
+        '200':
+          description: User updated successfully
+        '404':
+          description: User not found
+    
     delete:
       tags:
-        - Users and Clients
+        - Users
       summary: Delete a user
       description: Deletes a user from the system using their ID.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: id
           in: path
@@ -920,93 +1030,8 @@ paths:
       responses:
         '200':
           description: User successfully deleted
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "User deleted successfully"
         '404':
           description: User not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "User not found"
-        '401':
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Unauthorized"
-
-
-  /clientes:
-    get:
-      tags:
-        - Users and Clients
-      summary: Get all clients
-      responses:
-        '200':
-          description: List of clients
-    post:
-      tags:
-        - Users and Clients
-      summary: Create a client
-      responses:
-        '201':
-          description: Client successfully created
-  /clientes/{id}:
-    get:
-      tags:
-        - Users and Clients
-      summary: Get a client by ID
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Client found
-        '404':
-          description: Client not found
-    patch:
-      tags:
-          - Users and Clients
-      summary: Update a client
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Client successfully updated
-    delete:
-      tags:
-        - Users and Clients
-      summary: Delete a client
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        '204':
-          description: Client successfully deleted
 
           
   /api/MercadoLibre/connections/test-connection/{client_id}:
@@ -1065,3 +1090,13 @@ paths:
                   error:
                     type: object
                     example: {}
+
+
+# NO BORRAR ESTE FRAGMENTO DE CODIGO
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
