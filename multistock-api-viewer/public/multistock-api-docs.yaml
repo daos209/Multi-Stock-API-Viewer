@@ -893,6 +893,12 @@ paths:
                 email:
                   type: string
                   example: thisismyemail@email.com
+                password:
+                  type: string
+                  example: password
+                password_confirmation:
+                  type: string
+                  example: passwordConfirmation
       responses:
         '201':
           description: User successfully created
@@ -904,14 +910,9 @@ paths:
         - Users
       summary: Get a user by ID
       description: Retrieves user data using their ID.
+      security:
+        - BearerAuth: []  
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
-          schema:
-            type: string
-            example: "Bearer your-token-here"
         - name: id
           in: path
           required: true
@@ -923,19 +924,14 @@ paths:
           description: User retrieved successfully
         '404':
           description: User not found
-    put:
+    patch:
       tags:
         - Users
       summary: Update user data
       description: Updates user information using their ID.
+      security:
+        - BearerAuth: []  
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
-          schema:
-            type: string
-            example: "Bearer your-token-here"
         - name: id
           in: path
           required: true
@@ -966,19 +962,15 @@ paths:
           description: User updated successfully
         '404':
           description: User not found
+    
     delete:
       tags:
         - Users
       summary: Delete a user
       description: Deletes a user from the system using their ID.
+      security:
+        - BearerAuth: []  
       parameters:
-        - name: Authorization
-          in: header
-          description: Bearer token for authentication
-          required: true
-          schema:
-            type: string
-            example: "Bearer your-token-here"
         - name: id
           in: path
           required: true
@@ -1048,3 +1040,13 @@ paths:
                   error:
                     type: object
                     example: {}
+
+
+# NO BORRAR ESTE FRAGMENTO DE CODIGO
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
