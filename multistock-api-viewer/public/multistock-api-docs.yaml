@@ -1106,6 +1106,99 @@ paths:
                     type: object
                     example: {}
 
+  /api/mercadolibre/sales-by-date-range/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Retrieves a daily sales summary for a specific date range
+      description: Retrieves a daily sales summary from MercadoLibre for a specific client_id, allowing users to view sales made within a given date range. The response includes the total sales amount and the products sold.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client for whom the sales summary is being retrieved
+          schema:
+            type: string
+        - name: start_date
+          in: query
+          required: true
+          description: The first date range for comparison (e.g., 2025-01-01).
+          schema:
+            type: string
+            format: date
+            example: "2025-01-01"
+        - name: end_date
+          in: query
+          required: true
+          description: The last date range for comparison (e.g., 2025-01-31).
+          schema:
+            type: string
+            format: date
+            example: "2025-01-31"
+      responses:
+        '200':
+          description: Sales summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Ventas obtenidas con éxito.
+                  data:
+                    type: object
+                    additionalProperties:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          order_id:
+                            type: string
+                            example: "12345"
+                          order_date:
+                            type: string
+                            format: date-time
+                            example: "2025-01-01T10:00:00.000-00:00"
+                          total_amount:
+                            type: number
+                            format: float
+                            example: 200.50
+                          payment_method:
+                            type: string
+                            example: "credit_card"
+                          products:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: "987654321"
+                                title:
+                                  type: string
+                                  example: "Producto 1"
+                                quantity:
+                                  type: integer
+                                  example: 2
+                                price:
+                                  type: number
+                                  format: float
+                                  example: 100.25
+                                category_id:
+                                  type: string
+                                  example: "MLA12345"
+                                category:
+                                  type: string
+                                  example: "Electronics"
+        '400':
+          description: Invalid parameters (start_date, end_date)
+        '404':
+          description: Sales data not found for the given date range
+
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
