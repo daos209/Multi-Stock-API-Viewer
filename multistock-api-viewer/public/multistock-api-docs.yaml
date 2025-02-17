@@ -917,7 +917,22 @@ paths:
         '404':
           description: User not found
 
-  
+  /logout:
+    post:
+      tags:
+        - Login
+      summary: User logout
+      description: Revokes the user's token and logs them out of the system.
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Successfully logged out
+        '401':
+          description: Invalid or expired token
+        '500':
+          description: Internal server error
+
   /users:
     post:
       tags:
