@@ -120,6 +120,8 @@ paths:
         - Reports
       summary: Get sales by month
       description: Retrieves sales data for a specific month and client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -199,12 +201,15 @@ paths:
                                       price:
                                         type: integer
                                         example: 15000
+
   /mercadolibre/annual-sales/{client_id}:
     get:
       tags:
         - Reports
       summary: Get annual sales
       description: Retrieves annual sales data for a specific client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -278,12 +283,15 @@ paths:
                                       price:
                                         type: integer
                                         example: 5390
+
   /mercadolibre/weeks-of-month:
     get:
       tags:
         - Reports
       summary: Get weeks of the month
       description: Retrieves the weeks of a specific month.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: year
           in: query
@@ -322,12 +330,15 @@ paths:
                         end_date:
                           type: string
                           example: "2025-01-05"
+
   /mercadolibre/sales-by-week/{client_id}:
     get:
       tags:
         - Reports
       summary: Get sales by week
       description: Retrieves sales data for a specific week and client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -399,12 +410,15 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
+
   /mercadolibre/daily-sales/{client_id}:
     get:
       tags:
         - Reports
       summary: Get daily sales
       description: Retrieves daily sales data for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -449,12 +463,15 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
+
   /mercadolibre/top-selling-products/{client_id}:
     get:
       tags:
         - Reports
       summary: Get top selling products
       description: Retrieves the top selling products for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -505,12 +522,15 @@ paths:
                         total_amount:
                           type: integer
                           example: 21560
+
   /mercadolibre/order-statuses/{client_id}:
     get:
       tags:
         - Reports
       summary: Get order statuses
       description: Retrieves the order statuses for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -611,12 +631,15 @@ paths:
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+
   /mercadolibre/top-payment-methods/{client_id}:
     get:
       tags:
         - Reports
       summary: Get top payment methods
       description: Retrieves the top payment methods for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -665,12 +688,15 @@ paths:
                       credit_card:
                         type: integer
                         example: 2
+
   /mercadolibre/summary/{client_id}:
     get:
       tags:
         - Reports
       summary: Get store summary
       description: Retrieves a summary of the store for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -748,12 +774,15 @@ paths:
                           credit_card:
                             type: integer
                             example: 2
+
   /mercadolibre/refunds-by-category/{client_id}:
     get:
       tags:
         - Reports
       summary: Get refunds or returns by category
       description: Retrieves refunds or returns data by category for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -897,6 +926,7 @@ paths:
                                         comments:
                                           type: string
                                           example: Dejar en la puerta
+
   /reviews/{clientId}/{productId}:
     get:
       tags:
@@ -985,7 +1015,6 @@ paths:
                   data:
                     type: object
                     properties: {}
-
 
   /login:
     post:
@@ -1144,7 +1173,6 @@ paths:
           description: User successfully deleted
         '404':
           description: User not found
-
           
   /MercadoLibre/connections/test-connection/{client_id}:
     get:
@@ -1159,6 +1187,8 @@ paths:
           description: The ID of the client whose connection is being tested.
           schema:
             type: string
+      security:
+        - BearerAuth: []
       responses:
         "200":
           description: Connection successful.
@@ -1232,6 +1262,8 @@ paths:
             type: string
             format: date
             example: "2025-01-31"
+      security:
+        - BearerAuth: []
       responses:
         '200':
           description: Sales summary retrieved successfully
@@ -1300,7 +1332,7 @@ paths:
     get:
         tags:
             - Products
-        summary: Obtener productos por client_id desde MercadoLibre
+        summary: Get products by client_id from MercadoLibre
         description: |
           Obtiene la lista de productos publicados en MercadoLibre para un usuario específico, utilizando su `client_id`.
           También incluye el nombre de la categoría de cada producto.
@@ -1325,6 +1357,8 @@ paths:
             schema:
               type: integer
               default: 0
+        security:
+          - BearerAuth: []
         responses:
           "200":
             description: Lista de productos obtenida con éxito.
@@ -1433,7 +1467,6 @@ paths:
                     error:
                       type: object
                       example: { "message": "Internal Server Error", "status": 500 }
-
 
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
