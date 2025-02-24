@@ -1138,7 +1138,7 @@ paths:
           description: User not found
 
           
-  /api/MercadoLibre/connections/test-connection/{client_id}:
+  /MercadoLibre/connections/test-connection/{client_id}:
     get:
       tags:
         - Connection
@@ -1195,7 +1195,7 @@ paths:
                     type: object
                     example: {}
 
-  /api/mercadolibre/sales-by-date-range/{client_id}:
+  /mercadolibre/sales-by-date-range/{client_id}:
     get:
       tags:
         - Reports
