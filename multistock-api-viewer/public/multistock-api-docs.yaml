@@ -62,6 +62,8 @@ paths:
         - Reports
       summary: Get invoice report
       description: Retrieves an invoice report for a specific client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -106,6 +108,12 @@ paths:
                         type: array
                         items:
                           type: object
+        '401':
+          description: Unauthorized, invalid or missing token
+        '404':
+          description: Client not found
+
+
   /mercadolibre/sales-by-month/{client_id}:
     get:
       tags:
@@ -892,7 +900,7 @@ paths:
   /reviews/{clientId}/{productId}:
     get:
       tags:
-        - Reviews
+        - Reports
       summary: Get reviews for a specific product
       description: Retrieves reviews for a specific product using its ID and client ID.
       parameters:
@@ -1287,6 +1295,145 @@ paths:
           description: Invalid parameters (start_date, end_date)
         '404':
           description: Sales data not found for the given date range
+
+  /mercadolibre/products/{clientId}:
+    get:
+        tags:
+            - Products
+        summary: Obtener productos por client_id desde MercadoLibre
+        description: |
+          Obtiene la lista de productos publicados en MercadoLibre para un usuario específico, utilizando su `client_id`.
+          También incluye el nombre de la categoría de cada producto.
+        parameters:
+          - name: clientId
+            in: path
+            required: true
+            description: El `client_id` del usuario en MercadoLibre.
+            schema:
+              type: string
+          - name: limit
+            in: query
+            required: false
+            description: Número máximo de productos a devolver (por defecto, 50).
+            schema:
+              type: integer
+              default: 50
+          - name: offset
+            in: query
+            required: false
+            description: Número de productos a omitir antes de empezar a devolver resultados (por defecto, 0).
+            schema:
+              type: integer
+              default: 0
+        responses:
+          "200":
+            description: Lista de productos obtenida con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    message:
+                      type: string
+                      example: Productos obtenidos con éxito.
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: MLC123456
+                          title:
+                            type: string
+                            example: Bicicleta Montañera
+                          price:
+                            type: number
+                            example: 100000
+                          currency_id:
+                            type: string
+                            example: CLP
+                          available_quantity:
+                            type: integer
+                            example: 5
+                          sold_quantity:
+                            type: integer
+                            example: 2
+                          thumbnail:
+                            type: string
+                            format: uri
+                            example: https://example.com/image.jpg
+                          permalink:
+                            type: string
+                            format: uri
+                            example: https://mercadolibre.com/item/MLC123456
+                          status:
+                            type: string
+                            example: active
+                          category_id:
+                            type: string
+                            example: MLC440333
+                          category_name:
+                            type: string
+                            example: Bicicletas y Ciclismo
+                    pagination:
+                      type: object
+                      properties:
+                        total:
+                          type: integer
+                          example: 200
+                        limit:
+                          type: integer
+                          example: 50
+                        offset:
+                          type: integer
+                          example: 0
+          "401":
+            description: Token expirado, se requiere renovación.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: El token ha expirado. Por favor, renueve su token.
+          "404":
+            description: No se encontraron credenciales para el `client_id` proporcionado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: No se encontraron credenciales válidas para el client_id proporcionado.
+          "500":
+            description: Error al obtener datos desde MercadoLibre.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: Error al conectar con la API de MercadoLibre.
+                    error:
+                      type: object
+                      example: { "message": "Internal Server Error", "status": 500 }
+
 
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
