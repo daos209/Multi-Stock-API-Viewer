@@ -62,6 +62,8 @@ paths:
         - Reports
       summary: Get invoice report
       description: Retrieves an invoice report for a specific client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -106,12 +108,20 @@ paths:
                         type: array
                         items:
                           type: object
+        '401':
+          description: Unauthorized, invalid or missing token
+        '404':
+          description: Client not found
+
+
   /mercadolibre/sales-by-month/{client_id}:
     get:
       tags:
         - Reports
       summary: Get sales by month
       description: Retrieves sales data for a specific month and client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -191,12 +201,15 @@ paths:
                                       price:
                                         type: integer
                                         example: 15000
+
   /mercadolibre/annual-sales/{client_id}:
     get:
       tags:
         - Reports
       summary: Get annual sales
       description: Retrieves annual sales data for a specific client.
+      security:
+        - BearerAuth: []
       parameters:
         - name: client_id
           in: path
@@ -270,12 +283,15 @@ paths:
                                       price:
                                         type: integer
                                         example: 5390
+
   /mercadolibre/weeks-of-month:
     get:
       tags:
         - Reports
       summary: Get weeks of the month
       description: Retrieves the weeks of a specific month.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: year
           in: query
@@ -314,12 +330,15 @@ paths:
                         end_date:
                           type: string
                           example: "2025-01-05"
+
   /mercadolibre/sales-by-week/{client_id}:
     get:
       tags:
         - Reports
       summary: Get sales by week
       description: Retrieves sales data for a specific week and client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -391,12 +410,15 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
+
   /mercadolibre/daily-sales/{client_id}:
     get:
       tags:
         - Reports
       summary: Get daily sales
       description: Retrieves daily sales data for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -441,68 +463,143 @@ paths:
                             total_amount:
                               type: integer
                               example: 15000
-  /mercadolibre/top-selling-products/{client_id}:
+
+  /mercadolibre/reports/top-selling-products:
     get:
-      tags:
-        - Reports
-      summary: Get top selling products
-      description: Retrieves the top selling products for a specific client.
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve sales data (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve sales data (e.g., `01`)
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Productos más vendidos obtenidos con éxito.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Productos más vendidos obtenidos con éxito.
-                  total_sales:
-                    type: integer
-                    example: 90390
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        title:
-                          type: string
-                          example: Producto Imaginario X
-                        quantity:
-                          type: integer
-                          example: 4
-                        total_amount:
-                          type: integer
-                          example: 21560
+        tags:
+            - Reports
+        summary: Get top-selling products
+        description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico.
+        security:
+          - bearerAuth: []
+        parameters:
+          - name: client_id
+            in: query
+            required: true
+            schema:
+              type: string
+            description: Identificador del cliente en MercadoLibre
+          - name: year
+            in: query
+            required: false
+            schema:
+              type: integer
+              default: 2024
+            description: Año para filtrar los productos vendidos
+          - name: month
+            in: query
+            required: false
+            schema:
+              type: integer
+              minimum: 1
+              maximum: 12
+            description: Mes específico para filtrar los productos vendidos
+          - name: page
+            in: query
+            required: false
+            schema:
+              type: integer
+              default: 1
+            description: Número de página para paginación
+          - name: per_page
+            in: query
+            required: false
+            schema:
+              type: integer
+              default: 10
+            description: Cantidad de productos por página
+        responses:
+          '200':
+            description: Lista de productos más vendidos con variantes y tallas
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    message:
+                      type: string
+                      example: Productos más vendidos obtenidos con éxito.
+                    total_sales:
+                      type: integer
+                      example: 185680
+                    current_page:
+                      type: integer
+                      example: 1
+                    total_pages:
+                      type: integer
+                      example: 2
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          title:
+                            type: string
+                            example: Cuadro Mujer Lady Genny C-413 Maxi Cotton Spandex
+                          quantity:
+                            type: integer
+                            example: 4
+                          total_amount:
+                            type: integer
+                            example: 21560
+                          variation_id:
+                            type: integer
+                            example: 180723540962
+                          size:
+                            type: string
+                            nullable: true
+                            example: L
+          '401':
+            description: Token inválido o expirado
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: El token ha expirado. Por favor, renueve su token.
+          '404':
+            description: No se encontraron credenciales válidas
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: No se encontraron credenciales válidas para el client_id proporcionado.
+          '500':
+            description: Error al conectar con la API de MercadoLibre
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: Error al conectar con la API de MercadoLibre.
+
   /mercadolibre/order-statuses/{client_id}:
     get:
       tags:
         - Reports
       summary: Get order statuses
       description: Retrieves the order statuses for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -603,12 +700,15 @@ paths:
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+
   /mercadolibre/top-payment-methods/{client_id}:
     get:
       tags:
         - Reports
       summary: Get top payment methods
       description: Retrieves the top payment methods for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -657,12 +757,15 @@ paths:
                       credit_card:
                         type: integer
                         example: 2
+
   /mercadolibre/summary/{client_id}:
     get:
       tags:
         - Reports
       summary: Get store summary
       description: Retrieves a summary of the store for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -740,12 +843,15 @@ paths:
                           credit_card:
                             type: integer
                             example: 2
+
   /mercadolibre/refunds-by-category/{client_id}:
     get:
       tags:
         - Reports
       summary: Get refunds or returns by category
       description: Retrieves refunds or returns data by category for a specific client.
+      security:
+        - BearerAuth: []  
       parameters:
         - name: client_id
           in: path
@@ -889,10 +995,11 @@ paths:
                                         comments:
                                           type: string
                                           example: Dejar en la puerta
+
   /reviews/{clientId}/{productId}:
     get:
       tags:
-        - Reviews
+        - Reports
       summary: Get reviews for a specific product
       description: Retrieves reviews for a specific product using its ID and client ID.
       parameters:
@@ -977,7 +1084,6 @@ paths:
                   data:
                     type: object
                     properties: {}
-
 
   /login:
     post:
@@ -1136,9 +1242,8 @@ paths:
           description: User successfully deleted
         '404':
           description: User not found
-
           
-  /api/MercadoLibre/connections/test-connection/{client_id}:
+  /MercadoLibre/connections/test-connection/{client_id}:
     get:
       tags:
         - Connection
@@ -1151,6 +1256,8 @@ paths:
           description: The ID of the client whose connection is being tested.
           schema:
             type: string
+      security:
+        - BearerAuth: []
       responses:
         "200":
           description: Connection successful.
@@ -1195,7 +1302,7 @@ paths:
                     type: object
                     example: {}
 
-  /api/mercadolibre/sales-by-date-range/{client_id}:
+  /mercadolibre/sales-by-date-range/{client_id}:
     get:
       tags:
         - Reports
@@ -1224,6 +1331,8 @@ paths:
             type: string
             format: date
             example: "2025-01-31"
+      security:
+        - BearerAuth: []
       responses:
         '200':
           description: Sales summary retrieved successfully
@@ -1287,6 +1396,146 @@ paths:
           description: Invalid parameters (start_date, end_date)
         '404':
           description: Sales data not found for the given date range
+
+  /mercadolibre/products/{clientId}:
+    get:
+        tags:
+            - Products
+        summary: Get products by client_id from MercadoLibre
+        description: |
+          Obtiene la lista de productos publicados en MercadoLibre para un usuario específico, utilizando su `client_id`.
+          También incluye el nombre de la categoría de cada producto.
+        parameters:
+          - name: clientId
+            in: path
+            required: true
+            description: El `client_id` del usuario en MercadoLibre.
+            schema:
+              type: string
+          - name: limit
+            in: query
+            required: false
+            description: Número máximo de productos a devolver (por defecto, 50).
+            schema:
+              type: integer
+              default: 50
+          - name: offset
+            in: query
+            required: false
+            description: Número de productos a omitir antes de empezar a devolver resultados (por defecto, 0).
+            schema:
+              type: integer
+              default: 0
+        security:
+          - BearerAuth: []
+        responses:
+          "200":
+            description: Lista de productos obtenida con éxito.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: success
+                    message:
+                      type: string
+                      example: Productos obtenidos con éxito.
+                    data:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: MLC123456
+                          title:
+                            type: string
+                            example: Bicicleta Montañera
+                          price:
+                            type: number
+                            example: 100000
+                          currency_id:
+                            type: string
+                            example: CLP
+                          available_quantity:
+                            type: integer
+                            example: 5
+                          sold_quantity:
+                            type: integer
+                            example: 2
+                          thumbnail:
+                            type: string
+                            format: uri
+                            example: https://example.com/image.jpg
+                          permalink:
+                            type: string
+                            format: uri
+                            example: https://mercadolibre.com/item/MLC123456
+                          status:
+                            type: string
+                            example: active
+                          category_id:
+                            type: string
+                            example: MLC440333
+                          category_name:
+                            type: string
+                            example: Bicicletas y Ciclismo
+                    pagination:
+                      type: object
+                      properties:
+                        total:
+                          type: integer
+                          example: 200
+                        limit:
+                          type: integer
+                          example: 50
+                        offset:
+                          type: integer
+                          example: 0
+          "401":
+            description: Token expirado, se requiere renovación.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: El token ha expirado. Por favor, renueve su token.
+          "404":
+            description: No se encontraron credenciales para el `client_id` proporcionado.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: No se encontraron credenciales válidas para el client_id proporcionado.
+          "500":
+            description: Error al obtener datos desde MercadoLibre.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    status:
+                      type: string
+                      example: error
+                    message:
+                      type: string
+                      example: Error al conectar con la API de MercadoLibre.
+                    error:
+                      type: object
+                      example: { "message": "Internal Server Error", "status": 500 }
 
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
