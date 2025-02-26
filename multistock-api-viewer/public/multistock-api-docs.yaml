@@ -469,7 +469,7 @@ paths:
       tags:
         - Reports
       summary: Get top-selling products
-      description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico.
+      description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico, incluyendo el ID del producto y su variante.
       security:
         - BearerAuth: []  
       parameters:
@@ -507,6 +507,13 @@ paths:
                     items:
                       type: object
                       properties:
+                        product_id:
+                          type: string
+                          example: "MLA123456"
+                        variation_id:
+                          type: string
+                          nullable: true
+                          example: "MLA654321"
                         title:
                           type: string
                           example: Cuadro Mujer Lady Genny C-413 Maxi Cotton Spandex
@@ -516,9 +523,6 @@ paths:
                         total_amount:
                           type: integer
                           example: 21560
-                        variation_id:
-                          type: integer
-                          example: 180723540962
                         size:
                           type: string
                           nullable: true
@@ -562,7 +566,6 @@ paths:
                   message:
                     type: string
                     example: Error al conectar con la API de MercadoLibre.
-
 
   /mercadolibre/order-statuses/{client_id}:
     get:
