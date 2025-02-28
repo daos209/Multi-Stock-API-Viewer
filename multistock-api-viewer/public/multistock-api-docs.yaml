@@ -1512,6 +1512,157 @@ paths:
                       type: object
                       example: { "message": "Internal Server Error", "status": 500 }
 
+  /mercadolibre/client-item-list/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get products from MercadoLibre with payment status
+      description: Retrieves products for a specific client, with optional filters like payment status.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+            example: 5822095179207900
+        - name: limit
+          in: query
+          required: false
+          description: The number of products to retrieve per page (default in swagger is 0)
+          schema:
+            type: integer
+            example: 20
+        - name: offset
+          in: query
+          required: false
+          description: The offset to start fetching the products from (default is 0)
+          schema:
+            type: integer
+            example: 0
+        - name: payment_status
+          in: query
+          required: false
+          description: |
+            The payment status to filter the products by. Valid options are:
+            - "active": The product is active and available for sale.
+            - "inactive": The product is inactive and not available for sale.
+            - "paused": The product is paused and temporarily not available for sale.
+            - "sold": The product has been sold.
+            - "pending": The payment is pending for the product.
+            - "paid": The payment has been completed for the product.
+            - "shipped": The product has been shipped.
+            - "delivered": The product has been delivered.
+            - "returned": The product has been returned.
+          schema:
+            type: string
+            example: "paid"
+      responses:
+        '200':
+          description: Products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Products retrieved successfully.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        currency_id:
+                          type: string
+                          example: "ARS"
+                        available_quantity:
+                          type: integer
+                          example: 10
+                        sold_quantity:
+                          type: integer
+                          example: 5
+                        thumbnail:
+                          type: string
+                          example: "https://example.com/product-thumbnail.jpg"
+                        permalink:
+                          type: string
+                          example: "https://mercadolibre.com/product/ML123456"
+                        status:
+                          type: string
+                          example: "active"
+                        category_id:
+                          type: string
+                          example: "ML1234"
+                        category_name:
+                          type: string
+                          example: "Electronics"
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 200
+                      limit:
+                        type: integer
+                        example: 50
+                      offset:
+                        type: integer
+                        example: 0
+        '400':
+          description: Bad request, missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid query parameters.
+        '401':
+          description: Unauthorized, invalid or missing access token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized, please provide a valid token.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: There was an issue retrieving the products.
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
