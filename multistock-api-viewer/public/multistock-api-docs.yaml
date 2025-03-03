@@ -1765,13 +1765,11 @@ paths:
                           type: integer
                           example: 10
                         unit_price:
-                          type: number
-                          format: float
-                          example: 199.99
+                          type: integer
+                          example: 199
                         total_amount:
-                          type: number
-                          format: float
-                          example: 1999.90
+                          type: integer
+                          example: 1999
                         date_created:
                           type: string
                           format: date-time
