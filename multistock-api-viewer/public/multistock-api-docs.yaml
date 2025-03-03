@@ -984,14 +984,14 @@ paths:
           description: The ID of the client (for example, a MercadoLibre user ID)
           schema:
             type: string
-            example: "2999003706392728"
+            example: "5822095179207900"
         - name: productId
           in: path
           required: true
           description: The ID of the product to get reviews for
           schema:
             type: string
-            example: "MLC1525280579"
+            example: "MLC1408783769"
       security:
         - BearerAuth: []
       responses:
