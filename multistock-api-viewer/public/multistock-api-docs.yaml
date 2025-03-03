@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: http://127.0.0.1:8000/api/
+  - url: https://linen-anteater-319357.hostingersite.com/api
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -1765,13 +1765,11 @@ paths:
                           type: integer
                           example: 10
                         unit_price:
-                          type: number
-                          format: float
-                          example: 199.99
+                          type: integer
+                          example: 199
                         total_amount:
-                          type: number
-                          format: float
-                          example: 1999.90
+                          type: integer
+                          example: 1999
                         date_created:
                           type: string
                           format: date-time
