@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: https://linen-anteater-319357.hostingersite.com/api
+  - url: http://127.0.0.1:8000/api/
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -464,133 +464,108 @@ paths:
                               type: integer
                               example: 15000
 
-  /mercadolibre/reports/top-selling-products:
+  /mercadolibre/top-selling-products/{client_id}:
     get:
-        tags:
-            - Reports
-        summary: Get top-selling products
-        description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico.
-        security:
-          - bearerAuth: []
-        parameters:
-          - name: client_id
-            in: query
-            required: true
-            schema:
-              type: string
-            description: Identificador del cliente en MercadoLibre
-          - name: year
-            in: query
-            required: false
-            schema:
-              type: integer
-              default: 2024
-            description: Año para filtrar los productos vendidos
-          - name: month
-            in: query
-            required: false
-            schema:
-              type: integer
-              minimum: 1
-              maximum: 12
-            description: Mes específico para filtrar los productos vendidos
-          - name: page
-            in: query
-            required: false
-            schema:
-              type: integer
-              default: 1
-            description: Número de página para paginación
-          - name: per_page
-            in: query
-            required: false
-            schema:
-              type: integer
-              default: 10
-            description: Cantidad de productos por página
-        responses:
-          '200':
-            description: Lista de productos más vendidos con variantes y tallas
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: success
-                    message:
-                      type: string
-                      example: Productos más vendidos obtenidos con éxito.
-                    total_sales:
-                      type: integer
-                      example: 185680
-                    current_page:
-                      type: integer
-                      example: 1
-                    total_pages:
-                      type: integer
-                      example: 2
-                    data:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          title:
-                            type: string
-                            example: Cuadro Mujer Lady Genny C-413 Maxi Cotton Spandex
-                          quantity:
-                            type: integer
-                            example: 4
-                          total_amount:
-                            type: integer
-                            example: 21560
-                          variation_id:
-                            type: integer
-                            example: 180723540962
-                          size:
-                            type: string
-                            nullable: true
-                            example: L
-          '401':
-            description: Token inválido o expirado
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: error
-                    message:
-                      type: string
-                      example: El token ha expirado. Por favor, renueve su token.
-          '404':
-            description: No se encontraron credenciales válidas
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: error
-                    message:
-                      type: string
-                      example: No se encontraron credenciales válidas para el client_id proporcionado.
-          '500':
-            description: Error al conectar con la API de MercadoLibre
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    status:
-                      type: string
-                      example: error
-                    message:
-                      type: string
-                      example: Error al conectar con la API de MercadoLibre.
+      tags:
+        - Reports
+      summary: Get top-selling products
+      description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico, incluyendo el ID del producto y su variante.
+      security:
+        - BearerAuth: []  
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Identificador del cliente en MercadoLibre
+      responses:
+        '200':
+          description: Lista de productos más vendidos con variantes y tallas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos más vendidos obtenidos con éxito.
+                  total_sales:
+                    type: integer
+                    example: 185680
+                  current_page:
+                    type: integer
+                    example: 1
+                  total_pages:
+                    type: integer
+                    example: 2
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          example: "MLA123456"
+                        variation_id:
+                          type: string
+                          nullable: true
+                          example: "MLA654321"
+                        title:
+                          type: string
+                          example: Cuadro Mujer Lady Genny C-413 Maxi Cotton Spandex
+                        quantity:
+                          type: integer
+                          example: 4
+                        total_amount:
+                          type: integer
+                          example: 21560
+                        size:
+                          type: string
+                          nullable: true
+                          example: L
+        '401':
+          description: Token inválido o expirado
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
+        '404':
+          description: No se encontraron credenciales válidas
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron credenciales válidas para el client_id proporcionado.
+        '500':
+          description: Error al conectar con la API de MercadoLibre
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Error al conectar con la API de MercadoLibre.
 
   /mercadolibre/order-statuses/{client_id}:
     get:
@@ -1009,14 +984,14 @@ paths:
           description: The ID of the client (for example, a MercadoLibre user ID)
           schema:
             type: string
-            example: "2999003706392728"
+            example: "5822095179207900"
         - name: productId
           in: path
           required: true
           description: The ID of the product to get reviews for
           schema:
             type: string
-            example: "MLC1525280579"
+            example: "MLC1408783769"
       security:
         - BearerAuth: []
       responses:
@@ -1068,6 +1043,19 @@ paths:
                             date_created:
                               type: string
                               example: "2024-11-29T18:39:04Z"
+        '401':
+          description: Unauthorized due to expired token or invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "El token ha expirado. Por favor, renueve su token."
         '404':
           description: Product not found or no reviews available
           content:
@@ -1084,6 +1072,23 @@ paths:
                   data:
                     type: object
                     properties: {}
+        '500':
+          description: Internal server error due to an issue with the MercadoLibre API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "No se pudieron obtener las reviews."
+                  error:
+                    type: object
+                    additionalProperties: true
+
 
   /login:
     post:
@@ -1537,6 +1542,251 @@ paths:
                       type: object
                       example: { "message": "Internal Server Error", "status": 500 }
 
+  /mercadolibre/client-item-list/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get products from MercadoLibre with payment status
+      description: Retrieves products for a specific client, with optional filters like payment status.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+            example: 5822095179207900
+        - name: limit
+          in: query
+          required: false
+          description: The number of products to retrieve per page (default in swagger is 0)
+          schema:
+            type: integer
+            example: 20
+        - name: offset
+          in: query
+          required: false
+          description: The offset to start fetching the products from (default is 0)
+          schema:
+            type: integer
+            example: 0
+        - name: payment_status
+          in: query
+          required: false
+          description: |
+            The payment status to filter the products by. Valid options are:
+            - "active": The product is active and available for sale.
+            - "inactive": The product is inactive and not available for sale.
+            - "paused": The product is paused and temporarily not available for sale.
+            - "sold": The product has been sold.
+            - "pending": The payment is pending for the product.
+            - "paid": The payment has been completed for the product.
+            - "shipped": The product has been shipped.
+            - "delivered": The product has been delivered.
+            - "returned": The product has been returned.
+          schema:
+            type: string
+            example: "paid"
+      responses:
+        '200':
+          description: Products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Products retrieved successfully.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        currency_id:
+                          type: string
+                          example: "ARS"
+                        available_quantity:
+                          type: integer
+                          example: 10
+                        sold_quantity:
+                          type: integer
+                          example: 5
+                        thumbnail:
+                          type: string
+                          example: "https://example.com/product-thumbnail.jpg"
+                        permalink:
+                          type: string
+                          example: "https://mercadolibre.com/product/ML123456"
+                        status:
+                          type: string
+                          example: "active"
+                        category_id:
+                          type: string
+                          example: "ML1234"
+                        category_name:
+                          type: string
+                          example: "Electronics"
+                  pagination:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 200
+                      limit:
+                        type: integer
+                        example: 50
+                      offset:
+                        type: integer
+                        example: 0
+        '400':
+          description: Bad request, missing or invalid parameters.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Invalid query parameters.
+        '401':
+          description: Unauthorized, invalid or missing access token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Unauthorized, please provide a valid token.
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: There was an issue retrieving the products.
+
+  /mercadolibre/stock-reception/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get stock reception
+      description: Retrieves stock reception data for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+            example: "5822095179207900"
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock reception data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock reception data (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Stock reception data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Recepción de stock obtenida con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 10
+                        unit_price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        total_amount:
+                          type: number
+                          format: float
+                          example: 1999.90
+                        date_created:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        delivered_by:
+                          type: string
+                          example: "buyer_nickname"
+        '400':
+          description: Invalid parameters (year, month)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
