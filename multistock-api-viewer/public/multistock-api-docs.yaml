@@ -1043,6 +1043,19 @@ paths:
                             date_created:
                               type: string
                               example: "2024-11-29T18:39:04Z"
+        '401':
+          description: Unauthorized due to expired token or invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "El token ha expirado. Por favor, renueve su token."
         '404':
           description: Product not found or no reviews available
           content:
@@ -1059,6 +1072,23 @@ paths:
                   data:
                     type: object
                     properties: {}
+        '500':
+          description: Internal server error due to an issue with the MercadoLibre API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "error"
+                  message:
+                    type: string
+                    example: "No se pudieron obtener las reviews."
+                  error:
+                    type: object
+                    additionalProperties: true
+
 
   /login:
     post:
