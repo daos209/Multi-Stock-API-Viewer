@@ -992,6 +992,13 @@ paths:
           schema:
             type: string
             example: "MLC1408783769"
+        - name: limit
+          in: query
+          required: false
+          description: The maximum number of reviews to return
+          schema:
+            type: integer
+            example: 10
       security:
         - BearerAuth: []
       responses:
