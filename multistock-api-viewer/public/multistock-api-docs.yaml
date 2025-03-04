@@ -1793,6 +1793,101 @@ paths:
         '500':
           description: Internal server error
 
+  /mercadolibre/stock-rotation/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get stock rotation
+      description: Retrieves stock rotation data for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock rotation data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock rotation data (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Stock rotation data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Rotación de stock obtenida con éxito.
+                  current_page:
+                    type: integer
+                    example: 1
+                  total_pages:
+                    type: integer
+                    example: 2
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        variation_id:
+                          type: string
+                          example: "MLV123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 10
+                        size:
+                          type: string
+                          example: "L"
+                  payment_methods:
+                    type: object
+                    additionalProperties:
+                      type: integer
+                      example: 5
+        '400':
+          description: Invalid parameters (year, month)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
 components:
