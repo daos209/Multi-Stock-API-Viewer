@@ -971,12 +971,12 @@ paths:
                                           type: string
                                           example: Dejar en la puerta
 
-  /reviews/{clientId}/{productId}:
+  /reviews/{clientId}:
     get:
       tags:
         - Reports
-      summary: Get reviews for a specific product
-      description: Retrieves reviews for a specific product using its ID and client ID.
+      summary: Get reviews for a specific client
+      description: Retrieves reviews for products associated with a specific client ID.
       parameters:
         - name: clientId
           in: path
@@ -985,13 +985,6 @@ paths:
           schema:
             type: string
             example: "5822095179207900"
-        - name: productId
-          in: path
-          required: true
-          description: The ID of the product to get reviews for
-          schema:
-            type: string
-            example: "MLC1408783769"
         - name: limit
           in: query
           required: false
@@ -1014,7 +1007,7 @@ paths:
                     example: "success"
                   message:
                     type: string
-                    example: "Reviews obtained successfully."
+                    example: "Reviews obtenidas con éxito."
                   data:
                     type: object
                     properties:
@@ -1072,13 +1065,10 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "success"
+                    example: "error"
                   message:
                     type: string
-                    example: "Aún no hay opiniones sobre el producto."
-                  data:
-                    type: object
-                    properties: {}
+                    example: "No se encontraron credenciales válidas para el client_id proporcionado."
         '500':
           description: Internal server error due to an issue with the MercadoLibre API
           content:
@@ -1095,7 +1085,6 @@ paths:
                   error:
                     type: object
                     additionalProperties: true
-
 
   /login:
     post:
