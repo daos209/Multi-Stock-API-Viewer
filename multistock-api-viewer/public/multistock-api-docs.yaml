@@ -671,7 +671,7 @@ paths:
                               example: Garantía del vendedor - 6 meses
                             condition:
                               type: string
-                              example: new
+                              example: PAGADO
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
@@ -1879,6 +1879,95 @@ paths:
                     additionalProperties:
                       type: integer
                       example: 5
+        '400':
+          description: Invalid parameters (year, month)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/products-to-dispatch/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get products to dispatch
+      description: Retrieves products ready to be dispatched for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve products (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve products (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Products to dispatch retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos listos para despachar obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        variation_id:
+                          type: string
+                          example: "MLV123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 10
+                        size:
+                          type: string
+                          example: "L"
+                        shipment_history:
+                          type: array
+                          items:
+                            type: object
+                            additionalProperties: true
         '400':
           description: Invalid parameters (year, month)
         '401':
