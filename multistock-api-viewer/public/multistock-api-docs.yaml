@@ -669,9 +669,6 @@ paths:
                             warranty:
                               type: string
                               example: Garantía del vendedor - 6 meses
-                            condition:
-                              type: string
-                              example: PAGADO
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
