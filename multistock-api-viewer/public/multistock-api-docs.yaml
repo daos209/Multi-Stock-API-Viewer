@@ -620,7 +620,10 @@ paths:
                           pending:
                             type: integer
                             example: 0
-                          canceled:
+                          cancelled:
+                            type: integer
+                            example: 0
+                          used:
                             type: integer
                             example: 0
                       products:
@@ -669,12 +672,15 @@ paths:
                             warranty:
                               type: string
                               example: Garantía del vendedor - 6 meses
-                            condition:
-                              type: string
-                              example: PAGADO
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
 
   /mercadolibre/top-payment-methods/{client_id}:
     get:
@@ -985,13 +991,6 @@ paths:
           schema:
             type: string
             example: "5822095179207900"
-        - name: limit
-          in: query
-          required: false
-          description: The maximum number of reviews to return
-          schema:
-            type: integer
-            example: 10
       security:
         - BearerAuth: []
       responses:
@@ -1010,39 +1009,32 @@ paths:
                     example: "Reviews obtenidas con éxito."
                   data:
                     type: object
-                    properties:
-                      paging:
-                        type: object
-                        properties:
-                          total:
-                            type: integer
-                            example: 5
-                          limit:
-                            type: integer
-                            example: 5
-                          offset:
-                            type: integer
-                            example: 0
-                      reviews:
-                        type: array
-                        items:
+                    additionalProperties:
+                      type: object
+                      properties:
+                        product:
                           type: object
                           properties:
                             id:
-                              type: integer
-                              example: 1660648232
-                            title:
                               type: string
-                              example: "Excellent"
-                            content:
+                              example: "MLA123456"
+                            name:
                               type: string
-                              example: "The product is excellent, just as expected. The shipping was a bit expensive."
-                            rate:
-                              type: integer
-                              example: 5
-                            date_created:
-                              type: string
-                              example: "2024-11-29T18:39:04Z"
+                              example: "Producto A"
+                        reviews:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              rating:
+                                type: integer
+                                example: 5
+                              comment:
+                                type: string
+                                example: "Excelente producto"
+                              full_review:
+                                type: object
+                                additionalProperties: true
         '401':
           description: Unauthorized due to expired token or invalid credentials
           content:
@@ -1057,7 +1049,7 @@ paths:
                     type: string
                     example: "El token ha expirado. Por favor, renueve su token."
         '404':
-          description: Product not found or no reviews available
+          description: No valid credentials found for the provided client_id
           content:
             application/json:
               schema:
@@ -1081,7 +1073,7 @@ paths:
                     example: "error"
                   message:
                     type: string
-                    example: "No se pudieron obtener las reviews."
+                    example: "No se pudo obtener el ID del usuario. Por favor, valide su token."
                   error:
                     type: object
                     additionalProperties: true
