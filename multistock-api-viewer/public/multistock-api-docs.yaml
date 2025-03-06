@@ -620,7 +620,10 @@ paths:
                           pending:
                             type: integer
                             example: 0
-                          canceled:
+                          cancelled:
+                            type: integer
+                            example: 0
+                          used:
                             type: integer
                             example: 0
                       products:
@@ -672,6 +675,12 @@ paths:
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
 
   /mercadolibre/top-payment-methods/{client_id}:
     get:
