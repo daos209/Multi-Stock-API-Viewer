@@ -1021,6 +1021,9 @@ paths:
                             name:
                               type: string
                               example: "Producto A"
+                            price:
+                              type: number
+                              example: 100.25
                         reviews:
                           type: array
                           items:
