@@ -620,10 +620,7 @@ paths:
                           pending:
                             type: integer
                             example: 0
-                          cancelled:
-                            type: integer
-                            example: 0
-                          used:
+                          canceled:
                             type: integer
                             example: 0
                       products:
@@ -672,15 +669,12 @@ paths:
                             warranty:
                               type: string
                               example: Garantía del vendedor - 6 meses
+                            condition:
+                              type: string
+                              example: new
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
 
   /mercadolibre/top-payment-methods/{client_id}:
     get:
@@ -977,12 +971,12 @@ paths:
                                           type: string
                                           example: Dejar en la puerta
 
-  /reviews/{clientId}:
+  /reviews/{clientId}/{productId}:
     get:
       tags:
         - Reports
-      summary: Get reviews for a specific client
-      description: Retrieves reviews for products associated with a specific client ID.
+      summary: Get reviews for a specific product
+      description: Retrieves reviews for a specific product using its ID and client ID.
       parameters:
         - name: clientId
           in: path
@@ -991,6 +985,13 @@ paths:
           schema:
             type: string
             example: "5822095179207900"
+        - name: productId
+          in: path
+          required: true
+          description: The ID of the product to get reviews for
+          schema:
+            type: string
+            example: "MLC1408783769"
       security:
         - BearerAuth: []
       responses:
@@ -1006,38 +1007,42 @@ paths:
                     example: "success"
                   message:
                     type: string
-                    example: "Reviews obtenidas con éxito."
+                    example: "Reviews obtained successfully."
                   data:
                     type: object
-                    additionalProperties:
-                      type: object
-                      properties:
-                        product:
+                    properties:
+                      paging:
+                        type: object
+                        properties:
+                          total:
+                            type: integer
+                            example: 5
+                          limit:
+                            type: integer
+                            example: 5
+                          offset:
+                            type: integer
+                            example: 0
+                      reviews:
+                        type: array
+                        items:
                           type: object
                           properties:
                             id:
+                              type: integer
+                              example: 1660648232
+                            title:
                               type: string
-                              example: "MLA123456"
-                            name:
+                              example: "Excellent"
+                            content:
                               type: string
-                              example: "Producto A"
-                            price:
-                              type: number
-                              example: 100.25
-                        reviews:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              rating:
-                                type: integer
-                                example: 5
-                              comment:
-                                type: string
-                                example: "Excelente producto"
-                              full_review:
-                                type: object
-                                additionalProperties: true
+                              example: "The product is excellent, just as expected. The shipping was a bit expensive."
+                            rate:
+                              type: integer
+                              example: 5
+                            date_created:
+                              type: string
+                              example: "2024-11-29T18:39:04Z"
         '401':
           description: Unauthorized due to expired token or invalid credentials
           content:
@@ -1052,7 +1057,7 @@ paths:
                     type: string
                     example: "El token ha expirado. Por favor, renueve su token."
         '404':
-          description: No valid credentials found for the provided client_id
+          description: Product not found or no reviews available
           content:
             application/json:
               schema:
@@ -1060,10 +1065,13 @@ paths:
                 properties:
                   status:
                     type: string
-                    example: "error"
+                    example: "success"
                   message:
                     type: string
-                    example: "No se encontraron credenciales válidas para el client_id proporcionado."
+                    example: "Aún no hay opiniones sobre el producto."
+                  data:
+                    type: object
+                    properties: {}
         '500':
           description: Internal server error due to an issue with the MercadoLibre API
           content:
@@ -1076,10 +1084,11 @@ paths:
                     example: "error"
                   message:
                     type: string
-                    example: "No se pudo obtener el ID del usuario. Por favor, valide su token."
+                    example: "No se pudieron obtener las reviews."
                   error:
                     type: object
                     additionalProperties: true
+
 
   /login:
     post:
@@ -1768,190 +1777,6 @@ paths:
                         delivered_by:
                           type: string
                           example: "buyer_nickname"
-        '400':
-          description: Invalid parameters (year, month)
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
-  /mercadolibre/stock-rotation/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get stock rotation
-      description: Retrieves stock rotation data for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve stock rotation data (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve stock rotation data (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Stock rotation data retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Rotación de stock obtenida con éxito.
-                  current_page:
-                    type: integer
-                    example: 1
-                  total_pages:
-                    type: integer
-                    example: 2
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "ML123456"
-                        variation_id:
-                          type: string
-                          example: "MLV123456"
-                        title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 10
-                        size:
-                          type: string
-                          example: "L"
-                  payment_methods:
-                    type: object
-                    additionalProperties:
-                      type: integer
-                      example: 5
-        '400':
-          description: Invalid parameters (year, month)
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
-  /mercadolibre/products-to-dispatch/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get products to dispatch
-      description: Retrieves products ready to be dispatched for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve products (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve products (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Products to dispatch retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Productos listos para despachar obtenidos con éxito.
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "ML123456"
-                        variation_id:
-                          type: string
-                          example: "MLV123456"
-                        title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 10
-                        size:
-                          type: string
-                          example: "L"
-                        shipment_history:
-                          type: array
-                          items:
-                            type: object
-                            additionalProperties: true
         '400':
           description: Invalid parameters (year, month)
         '401':
