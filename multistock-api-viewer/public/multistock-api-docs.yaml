@@ -45,7 +45,7 @@ info:
       ```
 
     ### 3. Testing the Endpoints
-    After authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
+    fter authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
 
     ### 4. Troubleshooting
     - If the token is invalid or expired, you will receive a `401 Unauthorized` error.
