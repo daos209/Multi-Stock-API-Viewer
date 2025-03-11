@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: https://linen-anteater-319357.hostingersite.com/api
+  - url: http://127.0.0.1:8000/api
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -1960,6 +1960,117 @@ paths:
           description: No valid credentials found for the provided client_id
         '500':
           description: Internal server error
+
+  /mercadolibre/stock/{client_id}:
+    get:
+      tags:
+        - Products
+      summary: Get product stock
+      description: Retrieves the stock information for products associated with a specific client ID.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: The ID of the client (for example, a MercadoLibre user ID)
+          schema:
+            type: string
+            example: "5822095179207900"
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock data (e.g., `01`)
+          schema:
+            type: string
+        - name: day
+          in: query
+          required: false
+          description: The day for which to retrieve stock data (e.g., `15`)
+          schema:
+            type: string
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Stock de productos obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Stock de productos obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "MLA123456"
+                        title:
+                          type: string
+                          example: "Producto A"
+                        available_quantity:
+                          type: integer
+                          example: 10
+                        stock_reload_date:
+                          type: string
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        purchase_sale_date:
+                          type: string
+                          example: "2025-01-15T10:00:00.000-00:00"
+        '401':
+          description: Unauthorized due to expired token or invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
+        '404':
+          description: No valid credentials found for the provided client_id
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron credenciales válidas para el client_id proporcionado.
+        '500':
+          description: Internal server error due to an issue with the MercadoLibre API
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se pudo obtener el ID del usuario. Por favor, valide su token.
+                  error:
+                    type: object
+                    additionalProperties: true
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
