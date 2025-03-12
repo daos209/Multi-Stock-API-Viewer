@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: https://linen-anteater-319357.hostingersite.com/api
+  - url: http://127.0.0.1:8000/api
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -464,108 +464,6 @@ paths:
                               type: integer
                               example: 15000
 
-  /mercadolibre/top-selling-products/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get top-selling products
-      description: Devuelve una lista de los productos más vendidos en MercadoLibre para un cliente específico, incluyendo el ID del producto y su variante.
-      security:
-        - BearerAuth: []  
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Identificador del cliente en MercadoLibre
-      responses:
-        '200':
-          description: Lista de productos más vendidos con variantes y tallas
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Productos más vendidos obtenidos con éxito.
-                  total_sales:
-                    type: integer
-                    example: 185680
-                  current_page:
-                    type: integer
-                    example: 1
-                  total_pages:
-                    type: integer
-                    example: 2
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        product_id:
-                          type: string
-                          example: "MLA123456"
-                        variation_id:
-                          type: string
-                          nullable: true
-                          example: "MLA654321"
-                        title:
-                          type: string
-                          example: Cuadro Mujer Lady Genny C-413 Maxi Cotton Spandex
-                        quantity:
-                          type: integer
-                          example: 4
-                        total_amount:
-                          type: integer
-                          example: 21560
-                        size:
-                          type: string
-                          nullable: true
-                          example: L
-        '401':
-          description: Token inválido o expirado
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  message:
-                    type: string
-                    example: El token ha expirado. Por favor, renueve su token.
-        '404':
-          description: No se encontraron credenciales válidas
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  message:
-                    type: string
-                    example: No se encontraron credenciales válidas para el client_id proporcionado.
-        '500':
-          description: Error al conectar con la API de MercadoLibre
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: error
-                  message:
-                    type: string
-                    example: Error al conectar con la API de MercadoLibre.
 
   /mercadolibre/top-payment-methods/{client_id}:
     get:
@@ -1954,6 +1852,105 @@ paths:
                             seller_sku:
                               type: string
                               example: A-123-ROJ-M
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/top-selling-products/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get top-selling products
+      description: Retrieves the top-selling products for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve top-selling products (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve top-selling products (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Productos más vendidos obtenidos con éxito.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos más vendidos obtenidos con éxito.
+                  total_sales:
+                    type: integer
+                    example: 185680
+                  current_page:
+                    type: integer
+                    example: 1
+                  total_pages:
+                    type: integer
+                    example: 2
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "MLA123456"
+                        variation_id:
+                          type: string
+                          nullable: true
+                          example: "MLA654321"
+                        title:
+                          type: string
+                          example: "Producto Ejemplo"
+                        sku:
+                          type: string
+                          example: "SKU12345"
+                        quantity:
+                          type: integer
+                          example: 4
+                        total_amount:
+                          type: integer
+                          example: 21560
+                        size:
+                          type: string
+                          nullable: true
+                          example: "L"
         '401':
           description: Unauthorized, invalid or expired token
         '404':
