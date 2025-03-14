@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: https://linen-anteater-319357.hostingersite.com/api
+  - url: http://127.0.0.1:8000/api
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -1956,6 +1956,98 @@ paths:
         '500':
           description: Internal server error
 
+  /mercadolibre/stock-sales-history/{client_id}/{product_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get stock sales history
+      description: Retrieves the sales history for a specific product and client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          description: ID of the product
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock sales history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Historial de venta del stock obtenido con éxito.
+                  total_sales:
+                    type: integer
+                    example: 100
+                  sales_count:
+                    type: integer
+                    example: 10
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          example: "ML123456"
+                        product_title:
+                          type: string
+                          example: "Product Name"
+                        total_sales:
+                          type: integer
+                          example: 100
+                  sales:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: string
+                          example: "1234567890"
+                        product_id:
+                          type: string
+                          example: "ML123456"
+                        product_title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 2
+                        unit_price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        total_price:
+                          type: number
+                          format: float
+                          example: 399.98
+                        sale_date:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+        '400':
+          description: Invalid parameters (client_id, product_id)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
