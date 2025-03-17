@@ -1956,6 +1956,7 @@ paths:
         '500':
           description: Internal server error
 
+
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
 components:
