@@ -1580,6 +1580,7 @@ paths:
           description: ID of the client
           schema:
             type: string
+            example: 5822095179207900
         - name: year
           in: query
           required: false
@@ -1640,6 +1641,9 @@ paths:
                         size:
                           type: string
                           example: "L"
+                        sku:
+                          type: string
+                          example: "No tiene SKU"
                         shipment_history:
                           type: array
                           items:
