@@ -1658,6 +1658,216 @@ paths:
         '500':
           description: Internal server error
 
+
+
+  /mercadolibre/stock-reception/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get stock reception
+      description: Retrieves stock reception data for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock reception data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock reception data (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Stock reception data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Recepción de stock obtenida con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 10
+                        unit_price:
+                          type: integer
+                          example: 199
+                        total_amount:
+                          type: integer
+                          example: 1999
+                        date_created:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        delivered_by:
+                          type: string
+                          example: "buyer_nickname"
+                        sku:
+                          type: string
+                          example: "No tiene SKU"
+        '400':
+          description: Invalid parameters (year, month)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/top-selling-products/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get top selling products
+      description: Retrieves the top selling products for a specific client, filtered by year and month (optional).
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client.
+          schema:
+            type: string
+        - name: year
+          in: query
+          description: Year to filter the sold products.
+          schema:
+            type: integer
+        - name: month
+          in: query
+          description: Month to filter the sold products.
+          schema:
+            type: integer
+            example: 01
+        - name: page
+          in: query
+          description: Page number for pagination.
+          example: 1
+          schema:
+            type: integer
+        - name: per_page
+          in: query
+          description: Number of products per page.
+          schema:
+            type: integer
+            example: 10
+      responses:
+        '200':
+          description: Top selling products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos más vendidos obtenidos con éxito.
+                  total_sales:
+                    type: number
+                    example: 1234.56
+                  current_page:
+                    type: integer
+                    example: 1
+                  total_pages:
+                    type: integer
+                    example: 10
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "MLA1234567890"
+                        variation_id:
+                          type: string
+                          nullable: true
+                          example: "123456789"
+                        title:
+                          type: string
+                          example: "Producto de Ejemplo"
+                        sku:
+                          type: string
+                          example: "SKU123"
+                        quantity:
+                          type: integer
+                          example: 10
+                        total_amount:
+                          type: number
+                          example: 1234.56
+                        size:
+                          type: string
+                          nullable: true
+                          example: "M"
+                        variation_attributes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              id:
+                                type: string
+                                example: "COLOR"
+                              name:
+                                type: string
+                                example: "Color"
+                              value_id:
+                                type: string
+                                nullable: true
+                                example: "416302"
+                              value_name:
+                                type: string
+                                example: "Rojo"
+        '401':
+          description: Unauthorized, invalid or expired token.
+        '404':
+          description: No valid credentials found for the provided client_id.
+        '500':
+          description: Internal server error.
+
   /mercadolibre/order-statuses/{client_id}:
     get:
       tags:
@@ -1670,7 +1880,7 @@ paths:
         - name: client_id
           in: path
           required: true
-          description: ID of the client
+          description: ID of the client.
           schema:
             type: string
         - name: year
@@ -1773,193 +1983,6 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/top-selling-products/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get top-selling products
-      description: Retrieves the top-selling products for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve top-selling products (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve top-selling products (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Productos más vendidos obtenidos con éxito.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Productos más vendidos obtenidos con éxito.
-                  total_sales:
-                    type: integer
-                    example: 185680
-                  current_page:
-                    type: integer
-                    example: 1
-                  total_pages:
-                    type: integer
-                    example: 2
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "MLA123456"
-                        variation_id:
-                          type: string
-                          nullable: true
-                          example: "MLA654321"
-                        title:
-                          type: string
-                          example: "Producto Ejemplo"
-                        sku:
-                          type: string
-                          example: "SKU12345"
-                        quantity:
-                          type: integer
-                          example: 4
-                        total_amount:
-                          type: integer
-                          example: 21560
-                        size:
-                          type: string
-                          nullable: true
-                          example: "L"
-
-  /mercadolibre/stock-reception/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get stock reception
-      description: Retrieves stock reception data for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve stock reception data (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve stock reception data (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Stock reception data retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Recepción de stock obtenida con éxito.
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "ML123456"
-                        title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 10
-                        unit_price:
-                          type: integer
-                          example: 199
-                        total_amount:
-                          type: integer
-                          example: 1999
-                        date_created:
-                          type: string
-                          format: date-time
-                          example: "2025-01-01T10:00:00.000-00:00"
-                        delivered_by:
-                          type: string
-                          example: "buyer_nickname"
-                        sku:
-                          type: string
-                          example: "No tiene SKU"
-        '400':
-          description: Invalid parameters (year, month)
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
   /mercadolibre/stock/{client_id}:
     get:
       tags:
@@ -1972,25 +1995,13 @@ paths:
         - name: client_id
           in: path
           required: true
-          description: ID of the client
+          description: ID of the client.
           schema:
             type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve stock data (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve stock data (e.g., `01`)
-          schema:
-            type: string
-        - name: day
-          in: query
-          required: false
-          description: The day for which to retrieve stock data (e.g., `15`)
+        - name: product_id
+          in: path
+          required: true
+          description: ID of the product
           schema:
             type: string
       responses:
@@ -2020,25 +2031,38 @@ paths:
                           example: "Product Name"
                         available_quantity:
                           type: integer
-                          example: 10
-                        stock_reload_date:
+                          example: 100
+                  sales:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_id:
+                          type: string
+                          example: "1234567890"
+                        product_id:
+                          type: string
+                          example: "ML123456"
+                        product_title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 2
+                        unit_price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        total_price:
+                          type: number
+                          format: float
+                          example: 399.98
+                        sale_date:
                           type: string
                           format: date-time
                           example: "2025-01-01T10:00:00.000-00:00"
-                        purchase_sale_date:
-                          type: string
-                          format: date-time
-                          example: "2025-01-15T10:00:00.000-00:00"
-                        sku:
-                          type: string
-                          example: "SKU12345"
-                        details:
-                          type: array
-                          items:
-                            type: object
-                            additionalProperties: true
         '400':
-          description: Invalid parameters (year, month, day)
+          description: Invalid parameters (client_id, product_id)
         '401':
           description: Unauthorized, invalid or expired token
         '404':
