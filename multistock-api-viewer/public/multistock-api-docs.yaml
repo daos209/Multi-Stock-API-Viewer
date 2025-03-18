@@ -45,7 +45,7 @@ info:
       ```
 
     ### 3. Testing the Endpoints
-    After authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
+    fter authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
 
     ### 4. Troubleshooting
     - If the token is invalid or expired, you will receive a `401 Unauthorized` error.
@@ -1580,6 +1580,7 @@ paths:
           description: ID of the client
           schema:
             type: string
+            example: 5822095179207900
         - name: year
           in: query
           required: false
@@ -1640,6 +1641,9 @@ paths:
                         size:
                           type: string
                           example: "L"
+                        sku:
+                          type: string
+                          example: "No tiene SKU"
                         shipment_history:
                           type: array
                           items:
@@ -1979,12 +1983,12 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/stock-sales-history/{client_id}/{product_id}:
+  /mercadolibre/stock/{client_id}:
     get:
       tags:
-        - Reports
-      summary: Get stock sales history
-      description: Retrieves the sales history for a specific product and client.
+        - Products
+      summary: Get stock data
+      description: Retrieves stock data for a specific client.
       security:
         - BearerAuth: []
       parameters:
@@ -1997,12 +2001,12 @@ paths:
         - name: product_id
           in: path
           required: true
-          description: ID of the product.
+          description: ID of the product
           schema:
             type: string
       responses:
         '200':
-          description: Stock sales history retrieved successfully.
+          description: Stock data retrieved successfully.
           content:
             application/json:
               schema:
@@ -2013,25 +2017,19 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: Historial de venta del stock obtenido con éxito.
-                  total_sales:
-                    type: integer
-                    example: 100
-                  sales_count:
-                    type: integer
-                    example: 10
+                    example: Stock de productos obtenidos con éxito.
                   data:
                     type: array
                     items:
                       type: object
                       properties:
-                        product_id:
+                        id:
                           type: string
                           example: "ML123456"
-                        product_title:
+                        title:
                           type: string
                           example: "Product Name"
-                        total_sales:
+                        available_quantity:
                           type: integer
                           example: 100
                   sales:
@@ -2039,13 +2037,32 @@ paths:
                     items:
                       type: object
                       properties:
+                        order_id:
+                          type: string
+                          example: "1234567890"
+                        product_id:
+                          type: string
+                          example: "ML123456"
+                        product_title:
+                          type: string
+                          example: "Product Name"
                         quantity:
                           type: integer
                           example: 2
+                        unit_price:
+                          type: number
+                          format: float
+                          example: 199.99
+                        total_price:
+                          type: number
+                          format: float
+                          example: 399.98
                         sale_date:
                           type: string
                           format: date-time
                           example: "2025-01-01T10:00:00.000-00:00"
+        '400':
+          description: Invalid parameters (client_id, product_id)
         '401':
           description: Unauthorized, invalid or expired token
         '404':
