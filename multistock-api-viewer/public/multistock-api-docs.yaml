@@ -1956,6 +1956,91 @@ paths:
         '500':
           description: Internal server error
 
+  /mercadolibre/stock/{client_id}:
+    get:
+      tags:
+        - Products
+      summary: Get stock data
+      description: Retrieves stock data for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock data (e.g., `01`)
+          schema:
+            type: string
+        - name: day
+          in: query
+          required: false
+          description: The day for which to retrieve stock data (e.g., `15`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Stock de productos obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        available_quantity:
+                          type: integer
+                          example: 10
+                        stock_reload_date:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        purchase_sale_date:
+                          type: string
+                          format: date-time
+                          example: "2025-01-15T10:00:00.000-00:00"
+                        sku:
+                          type: string
+                          example: "SKU12345"
+                        details:
+                          type: array
+                          items:
+                            type: object
+                            additionalProperties: true
+        '400':
+          description: Invalid parameters (year, month, day)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
