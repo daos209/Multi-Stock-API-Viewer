@@ -1022,7 +1022,7 @@ paths:
         '404':
           description: User not found
           
-  /MercadoLibre/connections/test-connection/{client_id}:
+  /mercadoLibre/connections/test-connection/{client_id}:
     get:
       tags:
         - Connection
