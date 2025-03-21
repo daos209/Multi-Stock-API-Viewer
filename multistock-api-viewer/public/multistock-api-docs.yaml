@@ -2025,6 +2025,9 @@ paths:
                   last_sale_date:
                     type: string
                     example: "2025-01-01T10:00:00.000-00:00"
+                  total_products:
+                    type: integer
+                    example: 50
                   data:
                     type: array
                     items:
