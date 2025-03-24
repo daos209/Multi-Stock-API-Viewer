@@ -2061,6 +2061,71 @@ paths:
         '500':
           description: Internal server error
 
+  /mercadolibre/history-dispatch/{client_id}/{product_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get history dispatch
+      description: Retrieves the dispatch history for a specific product and client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client.
+          schema:
+            type: string
+        - name: product_id
+          in: path
+          required: true
+          description: ID of the product.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dispatch history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Historial de despachos del producto obtenido con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        shipping_id:
+                          type: string
+                          example: "123456789"
+                        status:
+                          type: string
+                          example: "shipped"
+                        tracking_number:
+                          type: string
+                          example: "TRACK123456"
+                        date_shipped:
+                          type: string
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        total_items:
+                          type: integer
+                          example: 2
+                        customer_id:
+                          type: string
+                          example: "987654321"
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
 components:
