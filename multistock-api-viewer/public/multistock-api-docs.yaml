@@ -2106,7 +2106,7 @@ paths:
                           example: "123456789"
                         status:
                           type: string
-                          example: "shipped"
+                          example: "enviado"
                         tracking_number:
                           type: string
                           example: "TRACK123456"
