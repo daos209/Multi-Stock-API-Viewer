@@ -53,7 +53,7 @@ info:
 
   version: 1.0.0
 servers:
-  - url: linen-anteater-319357.hostingersite.com/api
+  - url: https://linen-anteater-319357.hostingersite.com/api
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -1743,162 +1743,6 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/history-dispatch/{client_id}/{product_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get history dispatch
-      description: Retrieves the dispatch history for a specific product and client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client.
-          schema:
-            type: string
-        - name: product_id
-          in: path
-          required: true
-          description: ID of the product.
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Dispatch history retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Historial de despachos del producto obtenido con éxito.
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        shipping_id:
-                          type: string
-                          example: "123456789"
-                        status:
-                          type: string
-                          example: "enviado"
-                        tracking_number:
-                          type: string
-                          example: "TRACK123456"
-                        date_shipped:
-                          type: string
-                          example: "2025-01-01T10:00:00.000-00:00"
-                        total_items:
-                          type: integer
-                          example: 2
-                        customer_id:
-                          type: string
-                          example: "987654321"
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
-  /mercadolibre/order-statuses/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get order statuses
-      description: Retrieves order statuses (paid, pending, canceled) for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve order statuses (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve order statuses (e.g., `01`)
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Estados de órdenes obtenidos con éxito.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Estados de órdenes obtenidos con éxito.
-                  data:
-                    type: object
-                    properties:
-                      statuses:
-                        type: object
-                        properties:
-                          paid:
-                            type: integer
-                            example: 10
-                          pending:
-                            type: integer
-                            example: 5
-                          cancelled:
-                            type: integer
-                            example: 2
-                          used:
-                            type: integer
-                            example: 1
-                      products:
-                        type: array
-                        items:
-                          type: object
-                          properties:
-                            id:
-                              type: string
-                              example: "ML123456"
-                            title:
-                              type: string
-                              example: "Product Name"
-                            sku:
-                              type: string
-                              example: "SKU123"
-                            status:
-                              type: string
-                              example: "paid"
-                            sale_number:
-                              type: integer
-                              example: 123456
-                            variation_attributes:
-                              type: array
-                              items:
-                                type: object
-                                additionalProperties: true
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
   /mercadolibre/products-to-dispatch/{client_id}:
     get:
       tags:
@@ -2200,6 +2044,184 @@ paths:
                               value_name:
                                 type: string
                                 example: "Rojo"
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/history-dispatch/{client_id}/{sku_search}:
+    get:
+      tags:
+        - Reports
+      summary: Get history dispatch by SKU
+      description: Retrieves the dispatch history for a specific product identified by SKU and client ID.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: sku_search
+          in: path
+          required: true
+          description: SKU of the product to search for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dispatch history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Historial de despachos del producto
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Producto Id:
+                          type: string
+                          example: "ML123456"
+                        shipping_id:
+                          type: string
+                          example: "SHIP12345"
+                        status:
+                          type: string
+                          example: "entregado"
+                        tracking_number:
+                          type: string
+                          example: "TRACK12345"
+                        date_shipped:
+                          type: string
+                          example: "2025-01-01 10:00:00"
+                        date_estimed_arrival:
+                          type: string
+                          example: "2025-01-05 10:00:00"
+                        total_items:
+                          type: integer
+                          example: 2
+                        customer_id:
+                          type: string
+                          example: "123456789"
+                  resumen:
+                    type: object
+                    properties:
+                      total_despachos:
+                        type: integer
+                        example: 10
+                      primera_orden:
+                        type: object
+                        additionalProperties: true
+                      ultima_orden:
+                        type: object
+                        additionalProperties: true
+        '400':
+          description: Invalid parameters
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: Product or credentials not found
+        '500':
+          description: Internal server error
+
+  /mercadolibre/order-statuses/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get order statuses and related products
+      description: Retrieves order statuses (paid, pending, canceled) and related products for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve order statuses (default is the current year)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve order statuses (default is the current month)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Order statuses and related products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Estados de órdenes y productos relacionados obtenidos con éxito.
+                  data:
+                    type: object
+                    properties:
+                      statuses:
+                        type: object
+                        properties:
+                          paid:
+                            type: integer
+                            example: 10
+                          pending:
+                            type: integer
+                            example: 5
+                          cancelled:
+                            type: integer
+                            example: 2
+                          used:
+                            type: integer
+                            example: 0
+                      products:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: "ML123456"
+                            title:
+                              type: string
+                              example: "Product Name"
+                            sku:
+                              type: string
+                              example: "SKU123"
+                            status:
+                              type: string
+                              example: "paid"
+                            sale_number:
+                              type: string
+                              example: "123456789"
+                            variation_attributes:
+                              type: array
+                              items:
+                                type: object
+                                additionalProperties: true
+        '400':
+          description: Invalid parameters (year, month)
         '401':
           description: Unauthorized, invalid or expired token
         '404':
