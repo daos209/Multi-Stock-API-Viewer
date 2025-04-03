@@ -53,7 +53,8 @@ info:
 
   version: 1.0.0
 servers:
-  - url: https://linen-anteater-319357.hostingersite.com/api
+  - url: http://127.0.0.1:8000/api
+    
 
 paths:
   /mercadolibre/invoices/{client_id}:
@@ -1565,104 +1566,6 @@ paths:
         '500':
           description: Internal server error
 
-  
-
-  /mercadolibre/stock-reception/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get stock reception
-      description: Retrieves stock reception data for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve stock reception data (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve stock reception data (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Stock reception data retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Recepción de stock obtenida con éxito.
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "ML123456"
-                        title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 10
-                        unit_price:
-                          type: integer
-                          example: 199
-                        total_amount:
-                          type: integer
-                          example: 1999
-                        date_created:
-                          type: string
-                          format: date-time
-                          example: "2025-01-01T10:00:00.000-00:00"
-                        delivered_by:
-                          type: string
-                          example: "buyer_nickname"
-                        sku:
-                          type: string
-                          example: "No tiene SKU"
-        '400':
-          description: Invalid parameters (year, month)
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
-  
-
   /mercadolibre/stock-sales-history/{client_id}/{product_id}:
     get:
       tags:
@@ -2200,6 +2103,103 @@ paths:
                               value_name:
                                 type: string
                                 example: "Rojo"
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/stock-reception/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get stock reception
+      description: Retrieves stock reception data for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve stock reception data (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve stock reception data (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
+      responses:
+        '200':
+          description: Stock reception data retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Recepción de stock obtenida con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        sku:
+                          type: string
+                          example: "SKU123"
+                        sku_source:
+                          type: string
+                          example: "item_seller_custom_field"
+                        quantity:
+                          type: integer
+                          example: 10
+                        unit_price:
+                          type: number
+                          example: 199.99
+                        total_amount:
+                          type: number
+                          example: 1999.90
+                        date_created:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        delivered_by:
+                          type: string
+                          example: "buyer_nickname"
+        '400':
+          description: Invalid parameters (year, month)
         '401':
           description: Unauthorized, invalid or expired token
         '404':
