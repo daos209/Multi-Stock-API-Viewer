@@ -2229,6 +2229,142 @@ paths:
         '500':
           description: Internal server error
 
+  /mercadolibre/products/search/{client_id}:
+    get:
+      tags:
+        - Products
+      summary: Search products by client_id and search term
+      description: |
+        Searches for products published on MercadoLibre for a specific client using a search term.
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: The `client_id` of the user in MercadoLibre.
+          schema:
+            type: string
+        - name: q
+          in: query
+          required: false
+          description: Search term to filter products.
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of products to return (default is 50).
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          description: Number of products to skip before returning results (default is 0).
+          schema:
+            type: integer
+            default: 0
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Products retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: MLC123456
+                        title:
+                          type: string
+                          example: Bicicleta Montañera
+                        price:
+                          type: number
+                          example: 100000
+                        currency_id:
+                          type: string
+                          example: CLP
+                        available_quantity:
+                          type: integer
+                          example: 5
+                        sold_quantity:
+                          type: integer
+                          example: 2
+                        thumbnail:
+                          type: string
+                          format: uri
+                          example: https://example.com/image.jpg
+                        permalink:
+                          type: string
+                          format: uri
+                          example: https://mercadolibre.com/item/MLC123456
+                        status:
+                          type: string
+                          example: active
+                        category_id:
+                          type: string
+                          example: MLC440333
+                        category_name:
+                          type: string
+                          example: Bicicletas y Ciclismo
+                  total:
+                    type: integer
+                    example: 200
+        '401':
+          description: Unauthorized, invalid or expired token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
+        '404':
+          description: No valid credentials found for the provided client_id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron credenciales válidas para el client_id proporcionado.
+        '500':
+          description: Error connecting to the MercadoLibre API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Error al conectar con la API de MercadoLibre.
+                  error:
+                    type: object
+                    additionalProperties: true
+
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
 components:
