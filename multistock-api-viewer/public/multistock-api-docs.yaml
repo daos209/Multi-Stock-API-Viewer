@@ -2365,6 +2365,83 @@ paths:
                     type: object
                     additionalProperties: true
 
+  /mercadolibre/available-for-reception/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get available shipments for reception
+      description: Retrieves shipments that are pending reception for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shipments pending reception retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Envíos pendientes de recepción obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+        '404':
+          description: No shipments pending reception found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron envíos pendientes de recepción.
+        '401':
+          description: Token expired or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
+        '500':
+          description: Error connecting to the MercadoLibre API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Error al conectar con la API de MercadoLibre.
+                  error:
+                    type: object
+                    additionalProperties: true
+
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
 components:
