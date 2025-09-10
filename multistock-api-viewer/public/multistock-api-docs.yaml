@@ -45,7 +45,7 @@ info:
       ```
 
     ### 3. Testing the Endpoints
-    fter authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
+    After authenticating and obtaining the token, you can use it to make requests to the protected endpoints. Be sure to replace `your_generated_token` with the actual token from the `/login` response.
 
     ### 4. Troubleshooting
     - If the token is invalid or expired, you will receive a `401 Unauthorized` error.
@@ -1565,100 +1565,7 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/products-to-dispatch/{client_id}:
-    get:
-      tags:
-        - Reports
-      summary: Get products to dispatch
-      description: Retrieves products ready to be dispatched for a specific client.
-      security:
-        - BearerAuth: []
-      parameters:
-        - name: client_id
-          in: path
-          required: true
-          description: ID of the client
-          schema:
-            type: string
-            example: 5822095179207900
-        - name: year
-          in: query
-          required: false
-          description: The year for which to retrieve products (e.g., `2025`)
-          schema:
-            type: string
-        - name: month
-          in: query
-          required: false
-          description: The month for which to retrieve products (e.g., `01`)
-          schema:
-            type: string
-        - name: page
-          in: query
-          required: false
-          description: The page number to retrieve (default is 1)
-          schema:
-            type: integer
-          example: 1
-        - name: per_page
-          in: query
-          required: false
-          description: The number of items per page (default is 10)
-          schema:
-            type: integer
-          example: 10
-      responses:
-        '200':
-          description: Products to dispatch retrieved successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  status:
-                    type: string
-                    example: success
-                  message:
-                    type: string
-                    example: Productos listos para despachar obtenidos con éxito.
-                  data:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          example: "ML123456"
-                        variation_id:
-                          type: string
-                          example: "MLV123456"
-                        title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 10
-                        size:
-                          type: string
-                          example: "L"
-                        sku:
-                          type: string
-                          example: "No tiene SKU"
-                        shipment_history:
-                          type: array
-                          items:
-                            type: object
-                            additionalProperties: true
-        '400':
-          description: Invalid parameters (year, month)
-        '401':
-          description: Unauthorized, invalid or expired token
-        '404':
-          description: No valid credentials found for the provided client_id
-        '500':
-          description: Internal server error
-
-
+  
 
   /mercadolibre/stock-reception/{client_id}:
     get:
@@ -1754,12 +1661,14 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/top-selling-products/{client_id}:
+  
+
+  /mercadolibre/stock-sales-history/{client_id}/{product_id}:
     get:
       tags:
         - Reports
-      summary: Get top selling products
-      description: Retrieves the top selling products for a specific client, filtered by year and month (optional).
+      summary: Get stock sales history
+      description: Retrieves the sales history for a specific product and client.
       security:
         - BearerAuth: []
       parameters:
@@ -1769,29 +1678,300 @@ paths:
           description: ID of the client.
           schema:
             type: string
+        - name: product_id
+          in: path
+          required: true
+          description: ID of the product.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Stock sales history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Historial de venta del stock obtenido con éxito.
+                  total_sales:
+                    type: integer
+                    example: 100
+                  sales_count:
+                    type: integer
+                    example: 10
+                  last_sale_date:
+                    type: string
+                    example: "2025-01-01T10:00:00.000-00:00"
+                  total_products:
+                    type: integer
+                    example: 50
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        product_id:
+                          type: string
+                          example: "ML123456"
+                        product_title:
+                          type: string
+                          example: "Product Name"
+                        total_sales:
+                          type: integer
+                          example: 100
+                  sales:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        quantity:
+                          type: integer
+                          example: 2
+                        sale_date:
+                          type: string
+                          format: date-time
+                          example: "2025-01-01T10:00:00.000-00:00"
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/products-to-dispatch/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get products to dispatch
+      description: Retrieves products ready to be dispatched for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
         - name: year
           in: query
-          description: Year to filter the sold products.
+          required: false
+          description: The year for which to retrieve products (e.g., `2025`)
           schema:
-            type: integer
+            type: string
         - name: month
           in: query
-          description: Month to filter the sold products.
+          required: false
+          description: The month for which to retrieve products (e.g., `01`)
           schema:
-            type: integer
-            example: 01
+            type: string
         - name: page
           in: query
-          description: Page number for pagination.
-          example: 1
+          required: false
+          description: The page number to retrieve (default is 1)
           schema:
             type: integer
+          example: 1
         - name: per_page
           in: query
-          description: Number of products per page.
+          required: false
+          description: The number of items per page (default is 10)
           schema:
             type: integer
-            example: 10
+          example: 10
+      responses:
+        '200':
+          description: Products to dispatch retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Productos listos para despachar obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        variation_id:
+                          type: string
+                          example: "MLV123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        quantity:
+                          type: integer
+                          example: 10
+                        size:
+                          type: string
+                          example: "L"
+                        sku:
+                          type: string
+                          example: "SKU123"
+                        sku_source:
+                          type: string
+                          example: "seller_custom_field"
+                        sku_missing_reason:
+                          type: string
+                          example: "No se encontraron campos seller_custom_field, seller_sku ni atributos SKU en el producto"
+                        shipment_history:
+                          type: array
+                          items:
+                            type: object
+                            additionalProperties: true
+        '400':
+          description: Invalid parameters (year, month)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/stock/{client_id}:
+    get:
+      tags:
+        - Products
+      summary: Get product stock
+      description: Retrieves product stock for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve product stock (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve product stock (e.g., `01`)
+          schema:
+            type: string
+        - name: day
+          in: query
+          required: false
+          description: The day for which to retrieve product stock (e.g., `15`)
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Product stock retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Stock de productos obtenidos con éxito.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "ML123456"
+                        title:
+                          type: string
+                          example: "Product Name"
+                        available_quantity:
+                          type: integer
+                          example: 10
+                        stock_reload_date:
+                          type: string
+                          example: "2025-01-01T10:00:00.000-00:00"
+                        purchase_sale_date:
+                          type: string
+                          example: "2025-01-15T10:00:00.000-00:00"
+                        sku:
+                          type: string
+                          example: "SKU123"
+                        details:
+                          type: array
+                          items:
+                            type: object
+                            additionalProperties: true
+                        sku_source:
+                          type: string
+                          example: "seller_custom_field"
+                        sku_missing_reason:
+                          type: string
+                          example: "No se encontraron campos seller_custom_field, seller_sku ni atributos SKU en el producto"
+        '400':
+          description: Invalid parameters (year, month, day)
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: No valid credentials found for the provided client_id
+        '500':
+          description: Internal server error
+
+  /mercadolibre/top-selling-products/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get top selling products
+      description: Retrieves the top selling products for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+        - name: year
+          in: query
+          required: false
+          description: The year for which to retrieve top selling products (e.g., `2025`)
+          schema:
+            type: string
+        - name: month
+          in: query
+          required: false
+          description: The month for which to retrieve top selling products (e.g., `01`)
+          schema:
+            type: string
+        - name: page
+          in: query
+          required: false
+          description: The page number to retrieve (default is 1)
+          schema:
+            type: integer
+          example: 1
+        - name: per_page
+          in: query
+          required: false
+          description: The number of items per page (default is 10)
+          schema:
+            type: integer
+          example: 10
       responses:
         '200':
           description: Top selling products retrieved successfully.
@@ -1833,6 +2013,9 @@ paths:
                         sku:
                           type: string
                           example: "SKU123"
+                        sku_source:
+                          type: string
+                          example: "item_seller_custom_field"
                         quantity:
                           type: integer
                           example: 10
@@ -1862,42 +2045,127 @@ paths:
                                 type: string
                                 example: "Rojo"
         '401':
-          description: Unauthorized, invalid or expired token.
+          description: Unauthorized, invalid or expired token
         '404':
-          description: No valid credentials found for the provided client_id.
+          description: No valid credentials found for the provided client_id
         '500':
-          description: Internal server error.
+          description: Internal server error
 
-  /mercadolibre/order-statuses/{client_id}:
+  /mercadolibre/history-dispatch/{client_id}/{sku_search}:
     get:
       tags:
         - Reports
-      summary: Get order statuses
-      description: Retrieves the order statuses for a specific client.
+      summary: Get history dispatch by SKU
+      description: Retrieves the dispatch history for a specific product identified by SKU and client ID.
       security:
         - BearerAuth: []
       parameters:
         - name: client_id
           in: path
           required: true
-          description: ID of the client.
+          description: ID of the client
+          schema:
+            type: string
+        - name: sku_search
+          in: path
+          required: true
+          description: SKU of the product to search for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Dispatch history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Historial de despachos del producto
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        Producto Id:
+                          type: string
+                          example: "ML123456"
+                        shipping_id:
+                          type: string
+                          example: "SHIP12345"
+                        status:
+                          type: string
+                          example: "entregado"
+                        tracking_number:
+                          type: string
+                          example: "TRACK12345"
+                        date_shipped:
+                          type: string
+                          example: "2025-01-01 10:00:00"
+                        date_estimed_arrival:
+                          type: string
+                          example: "2025-01-05 10:00:00"
+                        total_items:
+                          type: integer
+                          example: 2
+                        customer_id:
+                          type: string
+                          example: "123456789"
+                  resumen:
+                    type: object
+                    properties:
+                      total_despachos:
+                        type: integer
+                        example: 10
+                      primera_orden:
+                        type: object
+                        additionalProperties: true
+                      ultima_orden:
+                        type: object
+                        additionalProperties: true
+        '400':
+          description: Invalid parameters
+        '401':
+          description: Unauthorized, invalid or expired token
+        '404':
+          description: Product or credentials not found
+        '500':
+          description: Internal server error
+
+  /mercadolibre/order-statuses/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get order statuses and related products
+      description: Retrieves order statuses (paid, pending, canceled) and related products for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
           schema:
             type: string
         - name: year
           in: query
           required: false
-          description: The year for which to retrieve order statuses (e.g., `2025`)
+          description: The year for which to retrieve order statuses (default is the current year)
           schema:
             type: string
         - name: month
           in: query
           required: false
-          description: The month for which to retrieve order statuses (e.g., `01`)
+          description: The month for which to retrieve order statuses (default is the current month)
           schema:
             type: string
       responses:
         '200':
-          description: Estados de órdenes y productos relacionados obtenidos con éxito.
+          description: Order statuses and related products retrieved successfully.
           content:
             application/json:
               schema:
@@ -1917,13 +2185,13 @@ paths:
                         properties:
                           paid:
                             type: integer
-                            example: 9
+                            example: 10
                           pending:
                             type: integer
-                            example: 0
+                            example: 5
                           cancelled:
                             type: integer
-                            example: 0
+                            example: 2
                           used:
                             type: integer
                             example: 0
@@ -1934,48 +2202,26 @@ paths:
                           properties:
                             id:
                               type: string
-                              example: MLC1234567890
+                              example: "ML123456"
                             title:
                               type: string
-                              example: Producto Ejemplo A
-                            category_id:
+                              example: "Product Name"
+                            sku:
                               type: string
-                              example: MLC1234
-                            variation_id:
-                              type: integer
-                              example: 123456789012
-                            seller_custom_field:
+                              example: "SKU123"
+                            status:
                               type: string
-                              example: null
-                            global_price:
+                              example: "paid"
+                            sale_number:
                               type: string
-                              example: null
-                            net_weight:
-                              type: string
-                              example: null
+                              example: "123456789"
                             variation_attributes:
                               type: array
                               items:
                                 type: object
-                                properties:
-                                  name:
-                                    type: string
-                                    example: Color
-                                  id:
-                                    type: string
-                                    example: COLOR
-                                  value_id:
-                                    type: string
-                                    example: 12345
-                                  value_name:
-                                    type: string
-                                    example: Rojo
-                            warranty:
-                              type: string
-                              example: Garantía del vendedor - 6 meses
-                            seller_sku:
-                              type: string
-                              example: A-123-ROJ-M
+                                additionalProperties: true
+        '400':
+          description: Invalid parameters (year, month)
         '401':
           description: Unauthorized, invalid or expired token
         '404':
@@ -1983,30 +2229,45 @@ paths:
         '500':
           description: Internal server error
 
-  /mercadolibre/stock/{client_id}:
+  /mercadolibre/products/search/{client_id}:
     get:
       tags:
         - Products
-      summary: Get stock data
-      description: Retrieves stock data for a specific client.
-      security:
-        - BearerAuth: []
+      summary: Search products by client_id and search term
+      description: |
+        Searches for products published on MercadoLibre for a specific client using a search term.
       parameters:
         - name: client_id
           in: path
           required: true
-          description: ID of the client.
+          description: The `client_id` of the user in MercadoLibre.
           schema:
             type: string
-        - name: product_id
-          in: path
-          required: true
-          description: ID of the product
+        - name: q
+          in: query
+          required: false
+          description: Search term to filter products.
           schema:
             type: string
+        - name: limit
+          in: query
+          required: false
+          description: Maximum number of products to return (default is 50).
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          required: false
+          description: Number of products to skip before returning results (default is 0).
+          schema:
+            type: integer
+            default: 0
+      security:
+        - BearerAuth: []
       responses:
         '200':
-          description: Stock data retrieved successfully.
+          description: Products retrieved successfully.
           content:
             application/json:
               schema:
@@ -2017,7 +2278,7 @@ paths:
                     example: success
                   message:
                     type: string
-                    example: Stock de productos obtenidos con éxito.
+                    example: Productos obtenidos con éxito.
                   data:
                     type: array
                     items:
@@ -2025,50 +2286,161 @@ paths:
                       properties:
                         id:
                           type: string
-                          example: "ML123456"
+                          example: MLC123456
                         title:
                           type: string
-                          example: "Product Name"
+                          example: Bicicleta Montañera
+                        price:
+                          type: number
+                          example: 100000
+                        currency_id:
+                          type: string
+                          example: CLP
                         available_quantity:
                           type: integer
-                          example: 100
-                  sales:
+                          example: 5
+                        sold_quantity:
+                          type: integer
+                          example: 2
+                        thumbnail:
+                          type: string
+                          format: uri
+                          example: https://example.com/image.jpg
+                        permalink:
+                          type: string
+                          format: uri
+                          example: https://mercadolibre.com/item/MLC123456
+                        status:
+                          type: string
+                          example: active
+                        category_id:
+                          type: string
+                          example: MLC440333
+                        category_name:
+                          type: string
+                          example: Bicicletas y Ciclismo
+                  total:
+                    type: integer
+                    example: 200
+        '401':
+          description: Unauthorized, invalid or expired token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
+        '404':
+          description: No valid credentials found for the provided client_id.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron credenciales válidas para el client_id proporcionado.
+        '500':
+          description: Error connecting to the MercadoLibre API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Error al conectar con la API de MercadoLibre.
+                  error:
+                    type: object
+                    additionalProperties: true
+
+  /mercadolibre/available-for-reception/{client_id}:
+    get:
+      tags:
+        - Reports
+      summary: Get available shipments for reception
+      description: Retrieves shipments that are pending reception for a specific client.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: client_id
+          in: path
+          required: true
+          description: ID of the client
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Shipments pending reception retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Envíos pendientes de recepción obtenidos con éxito.
+                  data:
                     type: array
                     items:
                       type: object
-                      properties:
-                        order_id:
-                          type: string
-                          example: "1234567890"
-                        product_id:
-                          type: string
-                          example: "ML123456"
-                        product_title:
-                          type: string
-                          example: "Product Name"
-                        quantity:
-                          type: integer
-                          example: 2
-                        unit_price:
-                          type: number
-                          format: float
-                          example: 199.99
-                        total_price:
-                          type: number
-                          format: float
-                          example: 399.98
-                        sale_date:
-                          type: string
-                          format: date-time
-                          example: "2025-01-01T10:00:00.000-00:00"
-        '400':
-          description: Invalid parameters (client_id, product_id)
-        '401':
-          description: Unauthorized, invalid or expired token
+                      additionalProperties: true
         '404':
-          description: No valid credentials found for the provided client_id
+          description: No shipments pending reception found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: No se encontraron envíos pendientes de recepción.
+        '401':
+          description: Token expired or invalid.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: El token ha expirado. Por favor, renueve su token.
         '500':
-          description: Internal server error
+          description: Error connecting to the MercadoLibre API.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  message:
+                    type: string
+                    example: Error al conectar con la API de MercadoLibre.
+                  error:
+                    type: object
+                    additionalProperties: true
 
 # NO BORRAR ESTE FRAGMENTO DE CODIGO
 
